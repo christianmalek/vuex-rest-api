@@ -1,7 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createVrapPlugin from "../vrap";
 
 Vue.use(Vuex);
+
+const plugin = createVrapPlugin();
 
 const store = new Vuex.Store({
   state: {
@@ -16,7 +19,8 @@ const store = new Vuex.Store({
     increment({ commit }) {
       commit("increment");
     }
-  }
+  },
+  plugins: [plugin]
 });
 
 export default store;
