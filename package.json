@@ -1,7 +1,7 @@
 {
   "name": "vuex-rest-api",
-  "version": "1.0.0",
-  "description": "helper utility to use REST APIs with Vuex",
+  "version": "0.0.1",
+  "description": "A Helper utility to simplify the usage of REST APIs with Vuex.",
   "author": "Christian Malek",
   "private": true,
   "scripts": {
@@ -82,7 +82,7 @@
     "webpack-merge": "^2.6.1"
   },
   "engines": {
-    "node": ">= 4.0.0",
+    "node": ">= 6.5.0",
     "npm": ">= 3.0.0"
   },
   "browserslist": [
