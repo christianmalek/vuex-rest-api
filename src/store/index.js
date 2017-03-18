@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import createStore, { Resource } from "../vrap";
+import { createStore, Resource } from "../vrap";
 
 Vue.use(Vuex);
 

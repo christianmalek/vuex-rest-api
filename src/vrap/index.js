@@ -47,7 +47,7 @@ export class Resource {
   }
 }
 
-class Vrap {
+class StoreCreator {
   constructor(resource) {
     if (resource instanceof Resource === false) {
       throw new Error("The first argument must be an instance of Resource");
@@ -143,6 +143,12 @@ class Vrap {
   }
 }
 
-export default function createStore(actions) {
-  return (new Vrap(actions)).store;
+export function createStore(actions) {
+  return (new StoreCreator(actions)).store;
 }
+
+const Vrap = {
+  createStore,
+  Resource
+};
+export default Vrap;

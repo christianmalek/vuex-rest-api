@@ -28,5 +28,4 @@ export default {
     // this.list_posts();
   }
 };
-
 </script>
