@@ -16,7 +16,7 @@ const resource = new Resource("posts", "https://jsonplaceholder.typicode.com", (
     name: "post"
   });
 
-const posts = createStore(resource.actions);
+const posts = createStore(resource);
 console.log(posts);
 
 const store = new Vuex.Store({

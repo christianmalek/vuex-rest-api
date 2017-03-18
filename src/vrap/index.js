@@ -1,9 +1,59 @@
 import axios from "axios";
 
-class Vrap {
+export class Resource {
+  constructor(baseName, baseURL, pathFn) {
+    this.baseName = baseName;
+    this.baseURL = baseURL;
+    this.pathFn = pathFn;
+    this.actions = {};
+  }
 
-  constructor(actions) {
-    this.actions = actions;
+  addAction({ action, method, pathFn = null, name = "",
+    mutationSuccessFn = null, mutationFailureFn = null }) {
+    const completePathFn = params =>
+      this.baseURL + (pathFn === null ? this.pathFn(params) : pathFn(params));
+    this.actions[action] = {
+      requestFn: (params = {}) => {
+        console.log("params: ", params);
+        return axios[method](completePathFn(params));
+      },
+      mutationSuccessFn,
+      mutationFailureFn,
+      baseName: this.baseName,
+      name,
+      dispatchString: this.getDispatchString(action, this.baseName, name),
+      commitString: this.getCommitString(action, this.baseName, name)
+    };
+
+    return this;
+  }
+
+  getDispatchString(action, baseName, name) {
+    let actionName = "";
+    if (name) {
+      actionName = name[0].toUpperCase() + name.substring(1);
+    } else {
+      actionName = baseName[0].toUpperCase() + baseName.substring(1);
+    }
+
+    return `${action}${actionName}`;
+  }
+
+  getCommitString(action, baseName, name) {
+    const mutationName = (name || baseName).replace(/([A-Z])/g, "_$1").toUpperCase();
+    const capitalizedAction = action.toUpperCase();
+
+    return `${capitalizedAction}_${mutationName}`;
+  }
+}
+
+class Vrap {
+  constructor(resource) {
+    if (resource instanceof Resource === false) {
+      throw new Error("The first argument must be an instance of Resource");
+    }
+
+    this.actions = resource.actions;
     this.successSuffix = "SUCCEEDED";
     this.failureSuffix = "FAILED";
     this.store = this.createStore();
@@ -90,53 +140,6 @@ class Vrap {
       mutations: this.createMutations(),
       actions: this.createActions()
     };
-  }
-}
-
-export class Resource {
-  constructor(baseName, baseURL, pathFn) {
-    this.baseName = baseName;
-    this.baseURL = baseURL;
-    this.pathFn = pathFn;
-    this.actions = {};
-  }
-
-  addAction({ action, method, pathFn = null, name = "",
-    mutationSuccessFn = null, mutationFailureFn = null }) {
-    const completePathFn = params =>
-      this.baseURL + (pathFn === null ? this.pathFn(params) : pathFn(params));
-    this.actions[action] = {
-      requestFn: (params = {}) => {
-        console.log("params: ", params);
-        return axios[method](completePathFn(params));
-      },
-      mutationSuccessFn,
-      mutationFailureFn,
-      baseName: this.baseName,
-      name,
-      dispatchString: this.getDispatchString(action, this.baseName, name),
-      commitString: this.getCommitString(action, this.baseName, name)
-    };
-
-    return this;
-  }
-
-  getDispatchString(action, baseName, name) {
-    let actionName = "";
-    if (name) {
-      actionName = name[0].toUpperCase() + name.substring(1);
-    } else {
-      actionName = baseName[0].toUpperCase() + baseName.substring(1);
-    }
-
-    return `${action}${actionName}`;
-  }
-
-  getCommitString(action, baseName, name) {
-    const mutationName = (name || baseName).replace(/([A-Z])/g, "_$1").toUpperCase();
-    const capitalizedAction = action.toUpperCase();
-
-    return `${capitalizedAction}_${mutationName}`;
   }
 }
 
