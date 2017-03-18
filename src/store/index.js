@@ -1,26 +1,22 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import createVrapPlugin from "../vrap";
+import createStore, { Resource } from "../vrap";
 
 Vue.use(Vuex);
 
-const plugin = createVrapPlugin();
+const resource = new Resource("posts", "https://jsonplaceholder.typicode.com", () => `/posts`)
+  .addAction({
+    action: "get",
+    method: "get"
+  });
+
+const posts = createStore(resource.actions);
+console.log(posts);
 
 const store = new Vuex.Store({
-  state: {
-    count: 0
-  },
-  mutations: {
-    increment(state) {
-      state.count += 1;
-    }
-  },
-  actions: {
-    increment({ commit }) {
-      commit("increment");
-    }
-  },
-  plugins: [plugin]
+  modules: {
+    posts
+  }
 });
 
 export default store;

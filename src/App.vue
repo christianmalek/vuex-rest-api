@@ -1,21 +1,29 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <p>{{count}}</p>
-    <button v-on:click="increment">increment</button>
+    <h1>Vrap Test</h1>
+    <code>{{posts}}</code>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
+import store from "./store/";
 
 export default {
   name: 'app',
   computed: {
-    ...mapState(["count"])
+    ...mapState([
+      "posts"
+    ])
   },
+  store,
   methods: {
-    ...mapActions(["increment"])
+    ...mapActions([
+      "get_posts"
+    ])
+  },
+  mounted() {
+    this.get_posts();
   }
 };
 

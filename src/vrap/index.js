@@ -1,77 +1,78 @@
-import Vue from "vue";
-import VueResource from "vue-resource";
+import axios from "axios";
 
-Vue.use(VueResource);
+class Vrap {
 
-/*
-Needs to be called like
+  constructor(actions) {
+    this.actions = actions;
+    this.successSuffix = "_SUCCEEDED";
+    this.failureSuffix = "_FAILED";
+    this.store = this.createStore();
+  }
 
-createVrapPlugin({
-  list: "/categories",
-  get: "/categories{/id}",
-  create: "/categories{/id}",
-  update: "/categories{/id}",
-  remove: "/categories{/id}"
-}, "categories");
-*/
-export default function createVrapPlugin(resourceURLs, name) {
+  createState() {
+    const state = {};
+    state.pending = false;
+    state.error = null;
 
-  const capitalizedName = name.replace(/(A-Z])/g, "_$1");
-  const successSuffix = "_SUCCEEDED";
-  const failureSuffix = "_FAILED";
+    const keys = Object.keys(this.actions);
+    if (keys.length > 0) {
+      const name = this.actions[keys[0]].name;
+      state[name] = null;
+    }
 
-  // TODO: Use same action names as vue-resource does, otherwise mapping is mandatory!
-  const map = {
-    list: "LIST",
-    get: "GET",
-    create: "CREATE",
-    update: "UPDATE",
-    delete: "DELETE"
-  };
+    return state;
+  }
 
-  const resources = {};
-  resourceURLs.forEach((key, value) => {
-    resources[key] = Vue.resource(value);
-  });
-
-  function createMutations() {
+  createMutations() {
     const mutations = {};
 
-    resources.forEach((key) => {
-      const method = map[key];
+    Object.keys(this.actions).forEach((action) => {
+      const { name, capitalizedName,
+        mutationSuccessFn, mutationFailureFn
+      } = this.actions[action];
 
-      mutations[`${method}_${capitalizedName}`] = (state) => {
+      mutations[`${action}_${capitalizedName}`] = (state) => {
         state.pending = true;
         state.error = null;
       };
-      mutations[`${method}_${capitalizedName}_${successSuffix}`] = (state, payload) => {
+      mutations[`${action}_${capitalizedName}_${this.successSuffix}`] = (state, payload) => {
         state.pending = false;
         state.error = null;
-        state[name] = payload;
+
+        if (mutationSuccessFn !== null) {
+          mutationSuccessFn(state, payload);
+        } else {
+          state[name] = payload;
+        }
       };
-      mutations[`${method}_${capitalizedName}_${failureSuffix}`] = (state, payload) => {
-        state.pending = true;
+      mutations[`${action}_${capitalizedName}_${this.failureSuffix}`] = (state, payload) => {
+        state.pending = false;
         state.error = payload;
-        state[name] = null;
+
+        if (mutationFailureFn !== null) {
+          mutationFailureFn(state, payload);
+        } else {
+          state[name] = null;
+        }
       };
     });
 
     return mutations;
   }
 
-  function createActions() {
+  createActions() {
     const actions = {};
 
-    resources.forEach((key, value) => {
-      const method = map[key];
+    Object.keys(this.actions).forEach((action) => {
+      const { name, capitalizedName, requestFn } = this.actions[action];
 
-      actions[key] = ({ commit }, { params, body = {} }) => {
-        commit(`${method}_${capitalizedName}`);
-        value[key](params, body)
+      actions[`${action}_${name}`] = ({ commit }, { params = {}, body = {} } = {}) => {
+        commit(`${action}_${capitalizedName}`);
+        requestFn(params, body)
           .then((response) => {
-            commit(`${method}_${capitalizedName}_${successSuffix}`, response);
-          }, (response) => {
-            commit(`${method}_${capitalizedName}_${failureSuffix}`, response);
+            commit(`${action}_${capitalizedName}_${this.successSuffix}`, response);
+          }, (error) => {
+            commit(`${action}_${capitalizedName}_${this.failureSuffix}`, error);
           });
       };
     });
@@ -79,9 +80,39 @@ export default function createVrapPlugin(resourceURLs, name) {
     return actions;
   }
 
-  return (store) => {
-    store.subscribe((mutation) => {
-      console.log(mutation);
-    });
-  };
+  createStore() {
+    return {
+      state: this.createState(),
+      mutations: this.createMutations(),
+      actions: this.createActions()
+    };
+  }
+}
+
+export class Resource {
+  constructor(name, baseURL, pathFn) {
+    this.name = name;
+    this.baseURL = baseURL;
+    this.pathFn = pathFn;
+    this.actions = {};
+  }
+
+  addAction({ action, method, pathFn = null, mutationSuccessFn = null, mutationFailureFn = null }) {
+    const completePathFn = (params = {}) =>
+      this.baseURL + (pathFn === null ? this.pathFn(params) : pathFn(params));
+
+    this.actions[action] = {
+      requestFn: (params = {}) => axios[method](completePathFn(params)),
+      mutationSuccessFn,
+      mutationFailureFn,
+      name: this.name,
+      capitalizedName: this.name.replace(/([A-Z])/g, "_$1")
+    };
+
+    return this;
+  }
+}
+
+export default function createStore(actions) {
+  return (new Vrap(actions)).store;
 }
