@@ -8,10 +8,18 @@ export class Resource {
     this.actions = {};
   }
 
-  addAction({ action, method, pathFn = null, name = "",
-    mutationSuccessFn = null, mutationFailureFn = null }) {
+  addAction({
+    action,
+    method,
+    pathFn = null,
+    name = "",
+    mutationSuccessFn = null,
+    mutationFailureFn = null }
+  ) {
+    method = method.toLowerCase();
     const completePathFn = params =>
       this.baseURL + (pathFn === null ? this.pathFn(params) : pathFn(params));
+
     this.actions[action] = {
       requestFn: (params = {}) => {
         console.log("params: ", params);
