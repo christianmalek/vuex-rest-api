@@ -63,7 +63,7 @@ const resource = new Resource("posts", "https://api.com", () => `/posts`)
     action: "get",
     method: "get",
     // Here we pass a custom path function. This is necessary, because we also
-    // need to pass an id. Please note that *id* is passen in an object.
+    // need to pass an id. Please note that *id* is passed in an object.
     // This is necessary because you could pass multiple arguments.
     requestFn: ({ id }) => `/posts/${id}`,
     // If you pass a name, it will added as property to the state.
