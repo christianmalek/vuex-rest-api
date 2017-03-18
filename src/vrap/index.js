@@ -4,8 +4,8 @@ class Vrap {
 
   constructor(actions) {
     this.actions = actions;
-    this.successSuffix = "_SUCCEEDED";
-    this.failureSuffix = "_FAILED";
+    this.successSuffix = "SUCCEEDED";
+    this.failureSuffix = "FAILED";
     this.store = this.createStore();
   }
 
@@ -14,11 +14,17 @@ class Vrap {
     state.pending = false;
     state.error = null;
 
-    const keys = Object.keys(this.actions);
-    if (keys.length > 0) {
-      const name = this.actions[keys[0]].name;
-      state[name] = null;
-    }
+    Object.keys(this.actions).forEach((action) => {
+      const { baseName, name } = this.actions[action];
+
+      if (state[baseName] === undefined) {
+        state[baseName] = null;
+      }
+
+      if (name && state[name] === undefined) {
+        state[name] = null;
+      }
+    });
 
     return state;
   }
@@ -27,15 +33,13 @@ class Vrap {
     const mutations = {};
 
     Object.keys(this.actions).forEach((action) => {
-      const { name, capitalizedName,
-        mutationSuccessFn, mutationFailureFn
-      } = this.actions[action];
+      const { name, commitString, mutationSuccessFn, mutationFailureFn } = this.actions[action];
 
-      mutations[`${action}_${capitalizedName}`] = (state) => {
+      mutations[`${commitString}`] = (state) => {
         state.pending = true;
         state.error = null;
       };
-      mutations[`${action}_${capitalizedName}_${this.successSuffix}`] = (state, payload) => {
+      mutations[`${commitString}_${this.successSuffix}`] = (state, payload) => {
         state.pending = false;
         state.error = null;
 
@@ -45,7 +49,7 @@ class Vrap {
           state[name] = payload;
         }
       };
-      mutations[`${action}_${capitalizedName}_${this.failureSuffix}`] = (state, payload) => {
+      mutations[`${commitString}_${this.failureSuffix}`] = (state, payload) => {
         state.pending = false;
         state.error = payload;
 
@@ -64,15 +68,15 @@ class Vrap {
     const actions = {};
 
     Object.keys(this.actions).forEach((action) => {
-      const { name, capitalizedName, requestFn } = this.actions[action];
+      const { dispatchString, commitString, requestFn } = this.actions[action];
 
-      actions[`${action}_${name}`] = ({ commit }, { params = {}, body = {} } = {}) => {
-        commit(`${action}_${capitalizedName}`);
+      actions[dispatchString] = ({ commit }, { params = {}, body = {} } = {}) => {
+        commit(commitString);
         requestFn(params, body)
           .then((response) => {
-            commit(`${action}_${capitalizedName}_${this.successSuffix}`, response);
+            commit(`${commitString}_${this.successSuffix}`, response);
           }, (error) => {
-            commit(`${action}_${capitalizedName}_${this.failureSuffix}`, error);
+            commit(`${commitString}_${this.failureSuffix}`, error);
           });
       };
     });
@@ -90,26 +94,49 @@ class Vrap {
 }
 
 export class Resource {
-  constructor(name, baseURL, pathFn) {
-    this.name = name;
+  constructor(baseName, baseURL, pathFn) {
+    this.baseName = baseName;
     this.baseURL = baseURL;
     this.pathFn = pathFn;
     this.actions = {};
   }
 
-  addAction({ action, method, pathFn = null, mutationSuccessFn = null, mutationFailureFn = null }) {
-    const completePathFn = (params = {}) =>
+  addAction({ action, method, pathFn = null, name = "",
+    mutationSuccessFn = null, mutationFailureFn = null }) {
+    const completePathFn = params =>
       this.baseURL + (pathFn === null ? this.pathFn(params) : pathFn(params));
-
     this.actions[action] = {
-      requestFn: (params = {}) => axios[method](completePathFn(params)),
+      requestFn: (params = {}) => {
+        console.log("params: ", params);
+        return axios[method](completePathFn(params));
+      },
       mutationSuccessFn,
       mutationFailureFn,
-      name: this.name,
-      capitalizedName: this.name.replace(/([A-Z])/g, "_$1")
+      baseName: this.baseName,
+      name,
+      dispatchString: this.getDispatchString(action, this.baseName, name),
+      commitString: this.getCommitString(action, this.baseName, name)
     };
 
     return this;
+  }
+
+  getDispatchString(action, baseName, name) {
+    let actionName = "";
+    if (name) {
+      actionName = name[0].toUpperCase() + name.substring(1);
+    } else {
+      actionName = baseName[0].toUpperCase() + baseName.substring(1);
+    }
+
+    return `${action}${actionName}`;
+  }
+
+  getCommitString(action, baseName, name) {
+    const mutationName = (name || baseName).replace(/([A-Z])/g, "_$1").toUpperCase();
+    const capitalizedAction = action.toUpperCase();
+
+    return `${capitalizedAction}_${mutationName}`;
   }
 }
 

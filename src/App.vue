@@ -13,17 +13,19 @@ export default {
   name: 'app',
   computed: {
     ...mapState([
-      "posts"
+      "posts",
     ])
   },
   store,
   methods: {
     ...mapActions([
-      "get_posts"
+      "getPost",
+      "listPosts"
     ])
   },
   mounted() {
-    this.get_posts();
+    this.getPost({ params: { id: 2 } });
+    // this.list_posts();
   }
 };
 

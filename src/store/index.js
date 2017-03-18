@@ -6,8 +6,14 @@ Vue.use(Vuex);
 
 const resource = new Resource("posts", "https://jsonplaceholder.typicode.com", () => `/posts`)
   .addAction({
-    action: "get",
+    action: "list",
     method: "get"
+  })
+  .addAction({
+    action: "get",
+    method: "get",
+    pathFn: ({ id }) => `/posts/${id}`,
+    name: "post"
   });
 
 const posts = createStore(resource.actions);
