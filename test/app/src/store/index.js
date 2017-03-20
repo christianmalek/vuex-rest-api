@@ -1,44 +1,48 @@
-import { createStore, Resource } from "../vuex-rest-api/index";
+import Vuex from 'vuex'
+import Vue from 'vue'
+import { Resource, createStore } from '../vuex-rest-api'
 
-const resource = new Resource("posts", "https://jsonplaceholder.typicode.com", {
+Vue.use(Vuex)
+
+const resource = new Resource('posts', 'https://jsonplaceholder.typicode.com', {
   post: null
 })
   .addAction({
-    action: "listPosts",
-    method: "get",
+    action: 'listPosts',
+    method: 'get',
     pathFn: () => `/posts`
   })
   .addAction({
-    action: "getPost",
-    method: "get",
+    action: 'getPost',
+    method: 'get',
     pathFn: ({ id }) => `/posts/${id}`,
-    mutationSuccessFn(state, payload) {
+    mutationSuccessFn (state, payload) {
       // will be set before mutationSuccessFn call:
       // state.pending = false
       // state.error = null
 
-      state.post = payload;
+      state.post = "benis :D"
     },
-    mutationFailureFn(state, payload) {
+    mutationFailureFn (state, payload) {
       // will be set before mutationFailureFn call:
       // state.pending = false
       // state.error = null
 
-      state.post = null;
+      state.post = null
     }
   })
   .addAction({
-    action: "updatePost",
-    method: "put",
-    pathFn: ({ id }) => `/posts/${id}`,
+    action: 'updatePost',
+    method: 'put',
+    pathFn: ({ id }) => `/posts/${id}`
   })
   .addAction({
-    action: "deletePost",
-    method: "delete",
+    action: 'deletePost',
+    method: 'delete',
     pathFn: ({ id }) => `/posts/${id}`
-  });
+  })
 
-const posts = createStore(resource);
+const posts = createStore(resource)
 
 /*
   listPosts(); => LIST_POSTS_SUCCEEDED | LIST_POSTS_FAILED
@@ -47,7 +51,6 @@ const posts = createStore(resource);
   deletePost({id: 3}); => DELETE_POST_SUCCEEDED | DELETE_POST_FAILED
 */
 
-
 /*
 listPosts, "GET http://api.com/posts", state.posts,
 getPost, "GET http://api.com/posts/id", state.post,
@@ -55,3 +58,10 @@ createPost, "POST http://api.com/posts", state.posts,
 updatePost, "PUT http://api.com/posts/2", state.posts,
 deletePost, "DELETE http://api.com/posts/2", state.posts
 */
+
+console.log(posts)
+
+const store = new Vuex.Store({
+  ...posts
+})
+export default store

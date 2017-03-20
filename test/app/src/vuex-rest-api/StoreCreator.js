@@ -6,34 +6,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import Resource from "./Resource";
-export { Resource };
 class StoreCreator {
-    constructor(actions) {
+    constructor(resource) {
         this.successSuffix = "SUCCEEDED";
         this.failureSuffix = "FAILED";
-        this.actions = actions;
+        this.resource = resource;
         this.store = this.createStore();
     }
     createState() {
-        const state = {};
-        state["pending"] = false;
-        state["error"] = null;
-        Object.keys(this.actions).forEach((action) => {
-            const { baseName, name } = this.actions[action];
-            if (state[baseName] === undefined) {
-                state[baseName] = null;
-            }
-            if (name && state[name] === undefined) {
-                state[name] = null;
-            }
+        const state = Object.assign({
+            pending: false,
+            error: null
+        }, this.resource.state);
+        const actions = this.resource.actions;
+        Object.keys(actions).forEach((action) => {
+            const { baseName } = actions[action];
+            state[baseName] = null;
         });
         return state;
     }
     createMutations() {
         const mutations = {};
-        Object.keys(this.actions).forEach((action) => {
-            const { name, commitString, mutationSuccessFn, mutationFailureFn } = this.actions[action];
+        const actions = this.resource.actions;
+        Object.keys(actions).forEach((action) => {
+            const { baseName, commitString, mutationSuccessFn, mutationFailureFn } = actions[action];
             mutations[`${commitString}`] = (state) => {
                 state.pending = true;
                 state.error = null;
@@ -41,33 +37,34 @@ class StoreCreator {
             mutations[`${commitString}_${this.successSuffix}`] = (state, payload) => {
                 state.pending = false;
                 state.error = null;
-                if (mutationSuccessFn !== null) {
+                if (mutationSuccessFn) {
                     mutationSuccessFn(state, payload);
                 }
                 else {
-                    state[name] = payload;
+                    state[baseName] = payload;
                 }
             };
             mutations[`${commitString}_${this.failureSuffix}`] = (state, payload) => {
                 state.pending = false;
                 state.error = payload;
-                if (mutationFailureFn !== null) {
+                if (mutationFailureFn) {
                     mutationFailureFn(state, payload);
                 }
                 else {
-                    state[name] = null;
+                    state[baseName] = null;
                 }
             };
         });
         return mutations;
     }
     createActions() {
-        const actions = {};
-        Object.keys(this.actions).forEach((action) => {
-            const { dispatchString, commitString, requestFn } = this.actions[action];
-            actions[dispatchString] = ({ commit }, { params = {}, body = {} } = {}) => __awaiter(this, void 0, void 0, function* () {
+        const storeActions = {};
+        const actions = this.resource.actions;
+        Object.keys(actions).forEach((action) => {
+            const { dispatchString, commitString, requestFn } = actions[action];
+            storeActions[dispatchString] = ({ commit }, params = {}, data = {}) => __awaiter(this, void 0, void 0, function* () {
                 commit(commitString);
-                return requestFn(params, body)
+                return requestFn(params, data)
                     .then((response) => {
                     commit(`${commitString}_${this.successSuffix}`, response);
                     return Promise.resolve(response.body);
@@ -77,7 +74,7 @@ class StoreCreator {
                 });
             });
         });
-        return actions;
+        return storeActions;
     }
     createStore() {
         return {

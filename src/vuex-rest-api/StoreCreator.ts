@@ -33,15 +33,8 @@ class StoreCreator {
 
     const actions = this.resource.actions;
     Object.keys(actions).forEach((action) => {
-      const { baseName, name } = actions[action];
-
-      if (state[baseName] === undefined) {
-        state[baseName] = null;
-      }
-
-      if (name && state[name] === undefined) {
-        state[name] = null;
-      }
+      const { baseName } = actions[action];
+      state[baseName] = null;
     });
 
     return state;
@@ -52,7 +45,7 @@ class StoreCreator {
 
     const actions = this.resource.actions;
     Object.keys(actions).forEach((action) => {
-      const { name, commitString, mutationSuccessFn, mutationFailureFn } = actions[action];
+      const { baseName, commitString, mutationSuccessFn, mutationFailureFn } = actions[action];
 
       mutations[`${commitString}`] = (state) => {
         state.pending = true;
@@ -62,20 +55,20 @@ class StoreCreator {
         state.pending = false;
         state.error = null;
 
-        if (mutationSuccessFn !== null) {
+        if (mutationSuccessFn) {
           mutationSuccessFn(state, payload);
         } else {
-          state[name] = payload;
+          state[baseName] = payload;
         }
       };
       mutations[`${commitString}_${this.failureSuffix}`] = (state, payload) => {
         state.pending = false;
         state.error = payload;
 
-        if (mutationFailureFn !== null) {
+        if (mutationFailureFn) {
           mutationFailureFn(state, payload);
         } else {
-          state[name] = null;
+          state[baseName] = null;
         }
       };
     });
@@ -88,11 +81,11 @@ class StoreCreator {
 
     const actions = this.resource.actions;
     Object.keys(actions).forEach((action) => {
-      const { dispatchString, commitString, pathFn } = actions[action];
+      const { dispatchString, commitString, requestFn } = actions[action];
 
-      storeActions[dispatchString] = async ({ commit }, { params = {}, body = {} } = {}) => {
+      storeActions[dispatchString] = async ({ commit }, params = {}, data = {}) => {
         commit(commitString);
-        return pathFn(params, body)
+        return requestFn(params, data)
           .then((response) => {
             commit(`${commitString}_${this.successSuffix}`, response);
             return Promise.resolve(response.body);

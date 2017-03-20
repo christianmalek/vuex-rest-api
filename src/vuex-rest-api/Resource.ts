@@ -1,11 +1,10 @@
 import axios from "axios";
 
 interface ResourceAction {
-  pathFn: any,
-  mutationSuccessFn: any,
-  mutationFailureFn: any,
+  requestFn: Function,
+  mutationSuccessFn: Function,
+  mutationFailureFn: Function,
   baseName: string,
-  name: string,
   dispatchString: string,
   commitString: string
 }
@@ -16,12 +15,14 @@ export interface ResourceActionMap {
 
 export interface ResourceActionOptions {
   action: string;
-  method: string;
+  method: HTTPMethod;
   pathFn: Function;
-  name?: string;
-  mutationSuccessFn?: any;
-  mutationFailureFn?: any;
+  mutationSuccessFn?: Function;
+  mutationFailureFn?: Function;
+  requestConfig?: Object;
 }
+
+export type HTTPMethod = "get" | "delete" | "head" | "post" | "put" | "patch";
 
 export default class Resource {
   private baseName: string;
@@ -37,40 +38,35 @@ export default class Resource {
   }
 
   addAction(options: ResourceActionOptions): Resource {
-    options.method = options.method.toLowerCase();
-
+    options.requestConfig = options.requestConfig || {};
     const completePathFn = (params: Object) => this.baseURL + options.pathFn(params);
 
     this.actions[options.action] = {
-      pathFn: (params: Object = {}) => {
-        return axios[options.method](completePathFn(params));
+      requestFn: (params: Object = {}, data: Object = {}) => {
+        console.log(params)
+        if (["post", "put", "patch"].indexOf(options.method) > -1) {
+          return axios[options.method](completePathFn(params), data, options.requestConfig)
+        }
+        else {
+          return axios[options.method](completePathFn(params), options.requestConfig);
+        }
       },
       mutationSuccessFn: options.mutationSuccessFn,
       mutationFailureFn: options.mutationFailureFn,
       baseName: this.baseName,
-      name: options.name,
-      dispatchString: this.getDispatchString(options.action, this.baseName, options.name),
-      commitString: this.getCommitString(options.action, this.baseName, options.name)
+      dispatchString: this.getDispatchString(options.action),
+      commitString: this.getCommitString(options.action)
     };
 
     return this;
   }
 
-  private getDispatchString(action: string, baseName: string, name: string): string {
-    let actionName: string = "";
-    if (name) {
-      actionName = name[0].toUpperCase() + name.substring(1);
-    } else {
-      actionName = baseName[0].toUpperCase() + baseName.substring(1);
-    }
-
-    return `${action}${actionName}`;
+  private getDispatchString(action: string): string {
+    return action;
   }
 
-  private getCommitString(action: string, baseName: string, name: string): string {
-    const mutationName: string = (name || baseName).replace(/([A-Z])/g, "_$1").toUpperCase();
-    const capitalizedAction: string = action.toUpperCase();
-
-    return `${capitalizedAction}_${mutationName}`;
+  private getCommitString(action: string): string {
+    const capitalizedAction: string = action.replace(/([A-Z])/g, "_$1").toUpperCase();
+    return capitalizedAction;
   }
 }
