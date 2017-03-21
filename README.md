@@ -20,7 +20,7 @@ npm install vuex-rest-api
 
 # API
 
-## Vrap.Resource
+## Resource
 The Resource class represents multiple properties which are necessary for the `createStore(resource)` function to create the state, mutations and actions.
 
 ### `Resource(baseURL, state)`
@@ -124,7 +124,7 @@ If you want to request all posts, you just need to dispatch the `listPosts()` ac
 
 If you need to pass also a body, just pass an object as second parameter like `updatePost({id: 5}, {name: "changedName", creator: "changedCreator"})`.
 
-## Vrap.createStore(resource)
+## createStore(resource: Resource)
 This function will create an object you can pass to Vuex to add a store.
 
 #### Example
