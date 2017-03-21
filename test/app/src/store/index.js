@@ -1,6 +1,6 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
-import { Resource, createStore } from '../vuex-rest-api'
+import { Resource, createStore } from 'vuex-rest-api'
 
 Vue.use(Vuex)
 

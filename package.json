@@ -4,6 +4,7 @@
   "description": "A Helper utility to simplify the usage of REST APIs with Vuex.",
   "author": "Christian Malek",
   "private": true,
+  "license": "MIT",
   "scripts": {},
   "dependencies": {
     "axios": "^0.15.3"
@@ -12,6 +13,11 @@
     "ts-node": "^2.1.0",
     "typescript": "^2.2.1"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "dist/index.js",
   "engines": {
     "node": ">= 6.5.0",
     "npm": ">= 3.0.0"

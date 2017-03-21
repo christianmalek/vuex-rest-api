@@ -2,7 +2,7 @@
   "compileOnSave": true,
   "compilerOptions": {
     "target": "ES6",
-    "outDir": "test/app/src/vuex-rest-api",
+    "outDir": "dist",
     "sourceMap": true,
     "removeComments": false,
     "alwaysStrict": true,
