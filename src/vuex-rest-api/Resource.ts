@@ -4,7 +4,7 @@ interface ResourceAction {
   requestFn: Function,
   mutationSuccessFn: Function,
   mutationFailureFn: Function,
-  baseName: string,
+  property: string,
   dispatchString: string,
   commitString: string
 }
@@ -15,35 +15,43 @@ export interface ResourceActionMap {
 
 export interface ResourceActionOptions {
   action: string;
-  method: HTTPMethod;
+  property: string;
+  method: string;
   pathFn: Function;
   mutationSuccessFn?: Function;
   mutationFailureFn?: Function;
   requestConfig?: Object;
 }
 
-export type HTTPMethod = "get" | "delete" | "head" | "post" | "put" | "patch";
-
 export default class Resource {
-  private baseName: string;
   private baseURL: string;
   actions: ResourceActionMap = {};
   state: Object;
+  private HTTPMethod = new Set(["get", "delete", "head", "post", "put", "patch"]);
 
-  constructor(baseName: string, baseURL: string, state: Object = {}) {
-    this.baseName = baseName;
+  constructor(baseURL: string, state: Object = {}) {
     this.baseURL = baseURL;
     this.actions = {};
     this.state = state;
   }
 
   addAction(options: ResourceActionOptions): Resource {
+    options.method = options.method || "get";
     options.requestConfig = options.requestConfig || {};
+
+    if (!options.property) {
+      throw new Error("'property' field must be set.");
+    }
+
+    if (this.HTTPMethod.has(options.method) === false) {
+      const methods = [...this.HTTPMethod.values()].join(", ");
+      throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}`)
+    }
+
     const completePathFn = (params: Object) => this.baseURL + options.pathFn(params);
 
     this.actions[options.action] = {
       requestFn: (params: Object = {}, data: Object = {}) => {
-        console.log(params)
         if (["post", "put", "patch"].indexOf(options.method) > -1) {
           return axios[options.method](completePathFn(params), data, options.requestConfig)
         }
@@ -51,9 +59,9 @@ export default class Resource {
           return axios[options.method](completePathFn(params), options.requestConfig);
         }
       },
+      property: options.property,
       mutationSuccessFn: options.mutationSuccessFn,
       mutationFailureFn: options.mutationFailureFn,
-      baseName: this.baseName,
       dispatchString: this.getDispatchString(options.action),
       commitString: this.getCommitString(options.action)
     };

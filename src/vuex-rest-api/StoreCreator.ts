@@ -27,17 +27,23 @@ class StoreCreator {
 
   createState(): Object {
     const state: Object = Object.assign({
-      pending: false,
-      error: null
+      pending: {},
+      error: {}
     }, this.resource.state);
 
     const actions = this.resource.actions;
     Object.keys(actions).forEach((action) => {
-      const { baseName } = actions[action];
-      state[baseName] = null;
+      const property = actions[action].property;
+      state[property] = null;
+      state["pending"][property] = false;
+      state["error"][property] = null;
     });
 
     return state;
+  }
+
+  createGetter(): Object {
+    return {};
   }
 
   createMutations(): MutationMap {
@@ -45,30 +51,30 @@ class StoreCreator {
 
     const actions = this.resource.actions;
     Object.keys(actions).forEach((action) => {
-      const { baseName, commitString, mutationSuccessFn, mutationFailureFn } = actions[action];
+      const { property, commitString, mutationSuccessFn, mutationFailureFn } = actions[action];
 
       mutations[`${commitString}`] = (state) => {
-        state.pending = true;
-        state.error = null;
+        state.pending[property] = true;
+        state.error[property] = null;
       };
       mutations[`${commitString}_${this.successSuffix}`] = (state, payload) => {
-        state.pending = false;
-        state.error = null;
+        state.pending[property] = false;
+        state.error[property] = null;
 
         if (mutationSuccessFn) {
           mutationSuccessFn(state, payload);
         } else {
-          state[baseName] = payload;
+          state[property] = payload.data;
         }
       };
       mutations[`${commitString}_${this.failureSuffix}`] = (state, payload) => {
-        state.pending = false;
-        state.error = payload;
+        state.pending[property] = false;
+        state.error[property] = payload;
 
         if (mutationFailureFn) {
           mutationFailureFn(state, payload);
         } else {
-          state[baseName] = null;
+          state[property] = null;
         }
       };
     });
@@ -88,7 +94,7 @@ class StoreCreator {
         return requestFn(params, data)
           .then((response) => {
             commit(`${commitString}_${this.successSuffix}`, response);
-            return Promise.resolve(response.body);
+            return Promise.resolve(response);
           }, (error) => {
             commit(`${commitString}_${this.failureSuffix}`, error);
             return Promise.reject(error)
@@ -108,6 +114,6 @@ class StoreCreator {
   }
 }
 
-export function createStore(actions) {
-  return (new StoreCreator(actions)).store;
+export function createStore(resource: Resource): Store {
+  return new StoreCreator(resource).store;
 }

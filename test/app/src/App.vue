@@ -12,10 +12,11 @@ export default {
     ...mapState(["post", "posts", "error", "pending"])
   },
   methods: {
-    ...mapActions(['getPost', 'listPosts'])
+    ...mapActions(['getPost', 'listPosts', "updatePost", "deletePost"])
   },
-  mounted () {
-    this.getPost({ id: 5 })
+  async mounted () {
+    const post = (await this.deletePost({id: 5})).data
+    console.log(post)
     // this.listPosts()
   }
 }

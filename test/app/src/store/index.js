@@ -4,41 +4,29 @@ import { Resource, createStore } from '../vuex-rest-api'
 
 Vue.use(Vuex)
 
-const resource = new Resource('posts', 'https://jsonplaceholder.typicode.com', {
-  post: null
-})
+const resource = new Resource('https://jsonplaceholder.typicode.com')
   .addAction({
     action: 'listPosts',
     method: 'get',
+    property: "posts",
     pathFn: () => `/posts`
   })
   .addAction({
     action: 'getPost',
     method: 'get',
-    pathFn: ({ id }) => `/posts/${id}`,
-    mutationSuccessFn (state, payload) {
-      // will be set before mutationSuccessFn call:
-      // state.pending = false
-      // state.error = null
-
-      state.post = "benis :D"
-    },
-    mutationFailureFn (state, payload) {
-      // will be set before mutationFailureFn call:
-      // state.pending = false
-      // state.error = null
-
-      state.post = null
-    }
+    property: "posts",
+    pathFn: ({ id }) => `/posts/${id}`
   })
   .addAction({
     action: 'updatePost',
     method: 'put',
+    property: "post",
     pathFn: ({ id }) => `/posts/${id}`
   })
   .addAction({
     action: 'deletePost',
     method: 'delete',
+    property: "post",
     pathFn: ({ id }) => `/posts/${id}`
   })
 
