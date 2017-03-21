@@ -8,7 +8,10 @@ A Helper utility to simplify the usage of REST APIs with Vuex. Uses the popular 
 This piece of software is still work in progress. Error reports and improvement proposals are welcome!
 
 ## What is this good for
-If you want to connect a REST API with Vuex you'll find that there are a few repetitive steps. You need to request the data from the api (with an action) and set the state (via a mutation). This utility helps in *creating the stores* by setting up the state, mutations and actions. It is **not** a middleware.
+If you want to connect a REST API with Vuex you'll find that there are a few repetitive steps. You need to request the data from the api (with an action) and set the state (via a mutation). This utility helps in *creating the stores* by setting up the state, mutations and actions.
+
+## It is **not** a middleware.
+It's just a helper utility to create the store object for you. If there's something you don't like just overwrite it.
 
 ## Installation
 ```bash
@@ -20,11 +23,10 @@ npm install vuex-rest-api
 ## Vrap.Resource
 The Resource class represents multiple properties which are necessary for the `createStore(resource)` function to create the state, mutations and actions.
 
-### `Resource(baseName, baseURL, requestFn)`
+### `Resource(baseURL, state)`
 Parameters:
-- `baseName`: The name of the property you want to represent from the resource.
 - `baseURL`: The API URL without the path
-- `requestFn`: The function which defines the API resource wihout the `baseURL`
+- `state`: The function which defines the API resource wihout the `baseURL`
 
 ### `addAction(options)`
 > Adds an action to the resource object to access an API endpoint.
@@ -33,20 +35,31 @@ You need to pass an object with following properties:
 ```js
 const options = {
   // REQUIRED: The name of the action.
-  action: String,
+  action: string,
   // REQUIRED: the HTTP method to request the API.
   // Following HTTP Methods are allowed at the moment:
   // get, delete, head, post, put, patch
-  method: String,
-  // The name of the property which value should be changed
-  // after successfully requests. If you omit, it uses the property name
-  // passed to the Resource constructor.
-  name: String,
+  method: string,
+  // REQUIRED: the property of the state which should
+  // be automatically changed if the resolve is successfully.
+  property: string,
   // The function which describes the string interpolation if the path
   // differs from requestFn described in the Resource constructor.
-  requestFn: Function,
+  pathFn: Function,
+  // This function will be called after successfully resolving the action.
+  // If you define this property, only the corresponding
+  // pending annmd error properties will be set, but not state[property].
+  // The method signature is (state, error).
   mutationSuccessFn: Function,
-  mutationFailureFn: Function
+  // This function will be called if the action request fails.
+  // If you define this property, only the corresponding
+  // pending and error properties will be set, but not state[property].
+  // The method signature is (state, payload).
+  mutationFailureFn: Function,
+  // If you need a specific request config, you can here pass
+  // an axios.requestConfig object. Please note that the passed
+  // method (see above in this object) won't be changed.
+  requestConfig: Function
 }
 ```
 
@@ -54,33 +67,41 @@ const options = {
 Imagine you want to create a resource to request all posts and also specific posts from an REST API. The endpoint's addresses are `GET https://jsonplaceholder.typicode.com/posts` and `GET https://jsonplaceholder.typicode.com/posts/id`. This is how it works:
 
 ```js
-const resource = new Resource("posts", "https://api.com", () => `/posts`)
+const resource = new Resource("https://api.com")
   .addAction({
-    action: "list",
-    method: "get"
+    action: "listPosts",
+    method: "get",
+    property: "posts",
+    pathFn: () => `/posts`
   })
   .addAction({
     action: "get",
     method: "get",
+    property: "post",
     // Here we pass a custom path function. This is necessary, because we also
     // need to pass an id. Please note that *id* is passed in an object.
     // This is necessary because you could pass multiple arguments.
-    requestFn: ({ id }) => `/posts/${id}`,
+    pathFn: ({ id }) => `/posts/${id}`
     // If you pass a name, it will added as property to the state.
     // Dispatching this action will change the *post* state and not the *posts* state.
     // With this approach you can have multiple properties in the store's state.
-    name: "post"
 });
 ```
 
-Now the resource is ready to pass it to the `createStore` function and create a store. The resource's *actions* looks like this:
+Now the resource is ready to pass it to the `createStore` function and create a store. The resource's *actions* look like this:
 
 ```js
 // resource.actions
 {
   state: {
-    pending: false,
-    error:   null,
+    pending: {
+      posts: false,
+      post:  false
+    },
+    error: {
+      posts: null,
+      post:  null
+    },
     posts:   null,
     post:    null
   },
@@ -93,13 +114,15 @@ Now the resource is ready to pass it to the `createStore` function and create a 
     GET_POST_FAILED:      (...)
   },
   actions: {
-    listPosts: (...),
+    listPosts: (),
     getPost: (...)
   }
 }
 ```
+#### Calling the actions
+If you want to request all posts, you just need to dispatch the `listPosts()` action and to fetch a specific post call `getPost({id})`. Don't forget to pass the necessary object and properties defined in the corresponding `pathFn` function, e.g. if you want to call `getPost`, and want to pass an arbitrary parameter, call it like `getPost({someParam: 5, anotherParam: "foo"})`.
 
-If you want to request all posts, you just need to dispatch the *listPosts()* action and to fetch a specific post *getPost({id})*. Don't forget to pass the necessary object and properties you defined in the corresponding *requestFn* function.
+If you need to pass also a body, just pass an object as second parameter like `updatePost({id: 5}, {name: "changedName", creator: "changedCreator"})`.
 
 ## Vrap.createStore(resource)
 This function will create an object you can pass to Vuex to add a store.
@@ -108,23 +131,37 @@ This function will create an object you can pass to Vuex to add a store.
 ```js
 import Vue from "vue";
 import Vuex from "vuex";
-// 1. Import vrap.
-import { createStore, Resource } from "vrap";
+// 1. Import vuex-rest-api.
+import { createStore, Resource } from "vuex-rest-api";
 
 Vue.use(Vuex);
 
 // 2. Create the resource object.
-const resource = new Resource("posts", "https://jsonplaceholder.typicode.com", () => `/posts`)
+const resource = new Resource("https://jsonplaceholder.typicode.com")
   .addAction({
-    action: "list",
-    method: "get"
+    action: 'listPosts',
+    method: 'get',
+    property: "posts",
+    pathFn: () => `/posts`
   })
   .addAction({
-    action: "get",
-    method: "get",
-    pathFn: ({ id }) => `/posts/${id}`,
-    name: "post"
-  });
+    action: 'getPost',
+    method: 'get',
+    property: "posts",
+    pathFn: ({ id }) => `/posts/${id}`
+  })
+  .addAction({
+    action: 'updatePost',
+    method: 'put',
+    property: "post",
+    pathFn: ({ id }) => `/posts/${id}`
+  })
+  .addAction({
+    action: 'deletePost',
+    method: 'delete',
+    property: "post",
+    pathFn: ({ id }) => `/posts/${id}`
+  })
 
 // 3. Create the store object.
 const posts = createStore(resource);
