@@ -1,0 +1,14 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "ES6",
+    "outDir": "dist",
+    "sourceMap": true,
+    "removeComments": false,
+    "alwaysStrict": true,
+    "allowJs": true
+  },
+  "include": [
+    "src/vuex-rest-api/*.ts"
+  ]
+}
