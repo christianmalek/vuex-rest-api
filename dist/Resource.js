@@ -43,4 +43,3 @@ export default class Resource {
         return capitalizedAction;
     }
 }
-//# sourceMappingURL=Resource.js.map

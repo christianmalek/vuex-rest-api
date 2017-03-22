@@ -3,12 +3,26 @@
   "compilerOptions": {
     "target": "ES6",
     "outDir": "dist",
-    "sourceMap": true,
+    "sourceMap": false,
     "removeComments": false,
     "alwaysStrict": true,
     "allowJs": true
   },
+  "formatCodeOptions": {
+    "indentSize": 5,
+    "tabSize": 5,
+    "newLineCharacter": "\r\n",
+    "convertTabsToSpaces": false,
+    "insertSpaceAfterCommaDelimiter": true,
+    "insertSpaceAfterSemicolonInForStatements": true,
+    "insertSpaceBeforeAndAfterBinaryOperators": true,
+    "insertSpaceAfterKeywordsInControlFlowStatements": true,
+    "insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
+    "insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
+    "placeOpenBraceOnNewLineForFunctions": false,
+    "placeOpenBraceOnNewLineForControlBlocks": false
+  },
   "include": [
-    "src/vuex-rest-api/*.ts"
+    "src/index.ts"
   ]
 }

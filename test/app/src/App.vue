@@ -1,23 +1,16 @@
 <template>
   <div id="app">
+    <test></test>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import test from "@/components/test"
 
 export default {
   name: 'app',
-  computed: {
-    ...mapState(["post", "posts", "error", "pending"])
-  },
-  methods: {
-    ...mapActions(['getPost', 'listPosts', "updatePost", "deletePost"])
-  },
-  async mounted () {
-    const post = (await this.deletePost({id: 5})).data
-    console.log(post)
-    // this.listPosts()
+  components: {
+    test
   }
 }
 </script>
