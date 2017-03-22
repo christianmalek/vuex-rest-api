@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "A Helper utility to simplify the usage of REST APIs with Vuex.",
   "author": "Christian Malek",
-  "private": true,
   "license": "MIT",
   "scripts": {},
   "dependencies": {
