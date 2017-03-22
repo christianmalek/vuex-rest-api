@@ -23,10 +23,9 @@ npm install vuex-rest-api
 ## Resource
 The Resource class represents multiple properties which are necessary for the `createStore(resource)` function to create the state, mutations and actions.
 
-### `Resource(baseURL, state)`
+### `Resource(baseURL)`
 Parameters:
 - `baseURL`: The API URL without the path
-- `state`: The function which defines the API resource wihout the `baseURL`
 
 ### `addAction(options)`
 > Adds an action to the resource object to access an API endpoint.
