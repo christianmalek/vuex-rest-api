@@ -43,7 +43,7 @@ const options = {
   // be automatically changed if the resolve is successfully.
   property: string,
   // The function which returns the rest of the API address (without the base URL).
-  The method signature is (params: Object).
+  // The method signature is (params: Object).
   pathFn: Function,
   // This function will be called after successfully resolving the action.
   // If you define this property, only the corresponding
@@ -91,7 +91,7 @@ const resource = new Resource("https://api.com")
 });
 ```
 
-Now the resource is ready to pass it to the `createStore` function to create a store. The returned object looks like this:
+Now the resource is ready to pass it to the `createStore` function to create a store. The returned object would look like this:
 
 ```js
 // resource.actions
@@ -122,6 +122,8 @@ Now the resource is ready to pass it to the `createStore` function to create a s
   }
 }
 ```
+As you can see, it just created the store for us. No more, no less.
+
 #### Calling the actions
 If you want to request all posts, you just need to dispatch the `listPosts()` action and to fetch a specific post call `getPost({id})`. Don't forget to pass the necessary object and properties defined in the corresponding `pathFn` function, e.g. if you want to call `getPost`, and want to pass an arbitrary parameter, call it like `getPost({someParam: 5, anotherParam: "foo"})`.
 
