@@ -28,9 +28,9 @@ Parameters:
 - `baseURL`: The API URL without the path
 
 ### `addAction(options)`
-> Adds an action to the resource object to access an API endpoint.
-Parameters:
-You need to pass an object with following properties:
+Adds an action to the resource object to access an API endpoint.
+
+The `options` parameter has following properties:
 ```js
 const options = {
   // REQUIRED: The name of the action.
@@ -42,8 +42,8 @@ const options = {
   // REQUIRED: the property of the state which should
   // be automatically changed if the resolve is successfully.
   property: string,
-  // The function which describes the string interpolation if the path
-  // differs from requestFn described in the Resource constructor.
+  // The function which returns the rest of the API address (without the base URL).
+  The method signature is (params: Object).
   pathFn: Function,
   // This function will be called after successfully resolving the action.
   // If you define this property, only the corresponding
@@ -57,14 +57,18 @@ const options = {
   mutationFailureFn: Function,
   // If you need a specific request config, you can here pass
   // an axios.requestConfig object. Please note that the passed
-  // method (see above in this object) won't be changed.
+  // HTTP method (see 'method' above in this object) won't be changed.
   requestConfig: Function
 }
 ```
 
 #### Example
-Imagine you want to create a resource to request all posts and also specific posts from an REST API. The endpoint's addresses are `GET https://jsonplaceholder.typicode.com/posts` and `GET https://jsonplaceholder.typicode.com/posts/id`. This is how it works:
+Imagine you want to create a resource to request all posts and also specific posts from an REST API. The endpoint's addresses are
 
+- `GET https://jsonplaceholder.typicode.com/posts` and
+- `GET https://jsonplaceholder.typicode.com/posts/id`.
+
+This is how it works:
 ```js
 const resource = new Resource("https://api.com")
   .addAction({
@@ -87,7 +91,7 @@ const resource = new Resource("https://api.com")
 });
 ```
 
-Now the resource is ready to pass it to the `createStore` function and create a store. The resource's *actions* look like this:
+Now the resource is ready to pass it to the `createStore` function to create a store. The returned object looks like this:
 
 ```js
 // resource.actions
