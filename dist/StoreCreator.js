@@ -92,3 +92,4 @@ class StoreCreator {
 export function createStore(resource) {
     return new StoreCreator(resource).store;
 }
+//# sourceMappingURL=StoreCreator.js.map

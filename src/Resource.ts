@@ -23,16 +23,28 @@ export interface ResourceActionOptions {
   requestConfig?: Object;
 }
 
+export interface ResourceOptions {
+  state?: Object,
+  axios?: Object
+}
+
 export default class Resource {
   private baseURL: string;
-  actions: ResourceActionMap = {};
-  state: Object;
+  private axios: Object;
   private HTTPMethod = new Set(["get", "delete", "head", "post", "put", "patch"]);
+  public actions: ResourceActionMap = {};
+  public state: Object;
 
-  constructor(baseURL: string, state: Object = {}) {
+  constructor(baseURL: string, options: ResourceOptions = {}) {
+    options.state = options.state || {};
+    options.axios = options.axios || axios;
+
     this.baseURL = baseURL;
     this.actions = {};
-    this.state = state;
+    this.state = options.state;
+    this.axios = options.axios;
+
+    console.log(this.axios);
   }
 
   addAction(options: ResourceActionOptions): Resource {
@@ -53,10 +65,10 @@ export default class Resource {
     this.actions[options.action] = {
       requestFn: (params: Object = {}, data: Object = {}) => {
         if (["post", "put", "patch"].indexOf(options.method) > -1) {
-          return axios[options.method](completePathFn(params), data, options.requestConfig)
+          return this.axios[options.method](completePathFn(params), data, options.requestConfig)
         }
         else {
-          return axios[options.method](completePathFn(params), options.requestConfig);
+          return this.axios[options.method](completePathFn(params), options.requestConfig);
         }
       },
       property: options.property,

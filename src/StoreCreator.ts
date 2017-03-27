@@ -84,7 +84,7 @@ class StoreCreator {
 
   createActions(): ActionMap {
     const storeActions = {};
-
+    
     const actions = this.resource.actions;
     Object.keys(actions).forEach((action) => {
       const { dispatchString, commitString, requestFn } = actions[action];

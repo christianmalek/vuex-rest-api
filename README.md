@@ -1,6 +1,6 @@
 # vuex-rest-api
 
-A Helper utility to simplify the usage of REST APIs with Vuex. Uses the popular HTTP client [axios](https://github.com/mzabriskie/axios) for requests.
+A Helper utility to simplify the usage of REST APIs with Vuex. Uses the popular HTTP client [axios](https://github.com/mzabriskie/axios) for requests. [Works](#vue-auth) with [websanova/vue-auth](websanova/vue-auth).
 
 > The README doesn't show every feature. If you have any questions, don't hesitate to ask. =)
 
@@ -23,25 +23,35 @@ npm install vuex-rest-api
 ## Resource
 The Resource class represents multiple properties which are necessary for the `createStore(resource)` function to create the state, mutations and actions.
 
-### `Resource(baseURL)`
+### `Resource(baseURL: string, options: Object)`
 Parameters:
 - `baseURL`: The API URL without the path
+- `options` has following properties:
+```js
+const options = {
+  // OPTIONAL: The axios instace to use for the requests.
+  // This is pretty useful if you use an package like websanova/vue-auth which
+  // sets automatically the Authorization header. So you don't need to care.
+  // If you don't pass an instance, it will use the global axios instance.
+  axios: Object
+}
+```
 
-### `addAction(options)`
+### `addAction(options: Object)`
 Adds an action to the resource object to access an API endpoint.
 
 The `options` parameter has following properties:
 ```js
 const options = {
   // REQUIRED: The name of the action.
-  action: string,
+  action: String,
   // REQUIRED: the HTTP method to request the API.
   // Following HTTP Methods are allowed at the moment:
   // get, delete, head, post, put, patch
-  method: string,
+  method: String,
   // REQUIRED: the property of the state which should
   // be automatically changed if the resolve is successfully.
-  property: string,
+  property: String,
   // The function which returns the rest of the API address (without the base URL).
   // The method signature is (params: Object).
   pathFn: Function,
@@ -214,4 +224,22 @@ export default {
   }
 };
 </script>
+```
+
+#### Usage with websanova/vue-auth
+If you want to use this little helper with vue-auth you need to use vue-axios. Just follow the steps of both readme's. Then just pass the instance axios to the Resource object:
+
+```js
+import Vue from "vue";
+
+const options = {
+  //this works only if you registered axios with vue-axios before
+  axios: Vue.axios
+}
+
+// pass options to the resource constructor
+const resource = new Resource("https://api.com", options);
+
+// now you can create the actions as is usual
+resource.addActions(...)
 ```

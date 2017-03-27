@@ -1,11 +1,15 @@
 import axios from "axios";
 export default class Resource {
-    constructor(baseURL, state = {}) {
-        this.actions = {};
+    constructor(baseURL, options = {}) {
         this.HTTPMethod = new Set(["get", "delete", "head", "post", "put", "patch"]);
+        this.actions = {};
+        options.state = options.state || {};
+        options.axios = options.axios || axios;
         this.baseURL = baseURL;
         this.actions = {};
-        this.state = state;
+        this.state = options.state;
+        this.axios = options.axios;
+        console.log(this.axios);
     }
     addAction(options) {
         options.method = options.method || "get";
@@ -21,10 +25,10 @@ export default class Resource {
         this.actions[options.action] = {
             requestFn: (params = {}, data = {}) => {
                 if (["post", "put", "patch"].indexOf(options.method) > -1) {
-                    return axios[options.method](completePathFn(params), data, options.requestConfig);
+                    return this.axios[options.method](completePathFn(params), data, options.requestConfig);
                 }
                 else {
-                    return axios[options.method](completePathFn(params), options.requestConfig);
+                    return this.axios[options.method](completePathFn(params), options.requestConfig);
                 }
             },
             property: options.property,
@@ -43,3 +47,4 @@ export default class Resource {
         return capitalizedAction;
     }
 }
+//# sourceMappingURL=Resource.js.map
