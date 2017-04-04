@@ -126,7 +126,7 @@ Now the resource is ready to pass it to the `createStore` function to create a s
   mutations: {
     LIST_POSTS:           (...),
     LIST_POSTS_SUCCEEDED: (...),
-    LIST_POSTS_FAIELD:    (...),
+    LIST_POSTS_FAILED:    (...),
     GET_POST:             (...),
     GET_POST_SUCCEEDED:   (...),
     GET_POST_FAILED:      (...)
@@ -140,9 +140,12 @@ Now the resource is ready to pass it to the `createStore` function to create a s
 As you can see, it just created the store for us. No more, no less.
 
 #### Calling the actions
-If you want to request all posts, you just need to dispatch the `listPosts()` action and to fetch a specific post call `getPost({id})`. Don't forget to pass the necessary object and properties defined in the corresponding `pathFn` function, e.g. if you want to call `getPost`, and want to pass an arbitrary parameter, call it like `getPost({someParam: 5, anotherParam: "foo"})`.
+If you want to request all posts, you just need to dispatch the `listPosts()` action and to fetch a specific post call `getPost({id})`. Don't forget to pass the necessary object and properties defined in the corresponding `pathFn` function, e.g. if you want to call `getPost`, and want to pass an arbitrary parameter, call it like `getPost({params: {someParam: 5, anotherParam: "foo"}})`.
 
-If you need to pass also a body, just pass an object as second parameter like `updatePost({id: 5}, {name: "changedName", creator: "changedCreator"})`.
+#### Pass data
+If you need to pass data, just pass an object as second parameter like `updatePost({params: {id: 5}, data:{name: "changedName", creator: "changedCreator"}})`.
+
+The function signature looks like this: `actionName({params: {}, data: {}})`
 
 ## createStore(resource: Resource)
 This function will create an object you can pass to Vuex to add a store.
@@ -225,7 +228,8 @@ export default {
   },
   mounted() {
     this.getPost({ params: { id: 2 } });
-    // this.list_posts();
+    this.list_posts();
+    this.updatePost({ params: { id: 7 }, data: { text: "lorem ipsum dolore"}});
   }
 };
 </script>

@@ -14,6 +14,11 @@ interface MutationMap {
   [action: string]: Function
 }
 
+interface ActionParamsBody {
+  params: Object;
+  data: Object;
+}
+
 class StoreCreator {
   private resource: Resource;
   private successSuffix: string = "SUCCEEDED";
@@ -84,12 +89,12 @@ class StoreCreator {
 
   createActions(): ActionMap {
     const storeActions = {};
-    
+
     const actions = this.resource.actions;
     Object.keys(actions).forEach((action) => {
       const { dispatchString, commitString, requestFn } = actions[action];
 
-      storeActions[dispatchString] = async ({ commit }, params = {}, data = {}) => {
+      storeActions[dispatchString] = async ({ commit }, { params = {}, data = {} }: ActionParamsBody) => {
         commit(commitString);
         return requestFn(params, data)
           .then((response) => {

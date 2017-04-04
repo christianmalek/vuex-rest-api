@@ -43,8 +43,6 @@ export default class Resource {
     this.actions = {};
     this.state = options.state;
     this.axios = options.axios;
-
-    console.log(this.axios);
   }
 
   addAction(options: ResourceActionOptions): Resource {
@@ -66,8 +64,7 @@ export default class Resource {
       requestFn: (params: Object = {}, data: Object = {}) => {
         if (["post", "put", "patch"].indexOf(options.method) > -1) {
           return this.axios[options.method](completePathFn(params), data, options.requestConfig)
-        }
-        else {
+        } else {
           return this.axios[options.method](completePathFn(params), options.requestConfig);
         }
       },

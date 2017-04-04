@@ -67,7 +67,7 @@ class StoreCreator {
         const actions = this.resource.actions;
         Object.keys(actions).forEach((action) => {
             const { dispatchString, commitString, requestFn } = actions[action];
-            storeActions[dispatchString] = ({ commit }, params = {}, data = {}) => __awaiter(this, void 0, void 0, function* () {
+            storeActions[dispatchString] = ({ commit }, { params = {}, data = {} }) => __awaiter(this, void 0, void 0, function* () {
                 commit(commitString);
                 return requestFn(params, data)
                     .then((response) => {

@@ -1,6 +1,6 @@
 {
   "name": "vuex-rest-api",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Helper utility to simplify the usage of REST APIs with Vuex.",
   "author": "Christian Malek",
   "license": "MIT",

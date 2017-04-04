@@ -9,7 +9,6 @@ export default class Resource {
         this.actions = {};
         this.state = options.state;
         this.axios = options.axios;
-        console.log(this.axios);
     }
     addAction(options) {
         options.method = options.method || "get";
