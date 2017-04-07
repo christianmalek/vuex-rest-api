@@ -62,10 +62,12 @@ export default class Resource {
 
     this.actions[options.action] = {
       requestFn: (params: Object = {}, data: Object = {}) => {
+        const requestConfig = Object.assign({}, options.requestConfig, { params: params })
+
         if (["post", "put", "patch"].indexOf(options.method) > -1) {
-          return this.axios[options.method](completePathFn(params), data, options.requestConfig)
+          return this.axios[options.method](completePathFn(params), data, requestConfig)
         } else {
-          return this.axios[options.method](completePathFn(params), options.requestConfig);
+          return this.axios[options.method](completePathFn(params), requestConfig);
         }
       },
       property: options.property,
