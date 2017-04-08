@@ -7,8 +7,6 @@
 
 A Helper utility to simplify the usage of REST APIs with Vuex 2. Uses the popular HTTP client [axios](https://github.com/mzabriskie/axios) for requests. [Works](#usage-with-websanovavue-auth) with [websanova/vue-auth](https://github.com/websanova/vue-auth).
 
-> The README doesn't show every feature. If you have any questions, don't hesitate to ask. =)
-
 ## Still in development
 This piece of software is still work in progress. Error reports and improvement proposals are welcome!
 
