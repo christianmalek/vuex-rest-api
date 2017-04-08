@@ -38,7 +38,11 @@ const options = {
   // This is pretty useful if you use an package like websanova/vue-auth which
   // sets automatically the Authorization header. So you don't need to care.
   // If you don't pass an instance, it will use the global axios instance.
-  axios: Object
+  axios: Object,
+  // If you want to append the params to the request URL,
+  // set this property to true. You can set this option also in
+  // every single action if you don't need it for every action.
+  queryParams: Boolean
 }
 ```
 
@@ -73,7 +77,10 @@ const options = {
   // If you need a specific request config, you can here pass
   // an axios.requestConfig object. Please note that the passed
   // HTTP method (see 'method' above in this object) won't be changed.
-  requestConfig: Function
+  requestConfig: Function,
+  // If you want to append the params to the request URL,
+  // set this property to true.
+  queryParams: Boolean
 }
 ```
 
@@ -146,6 +153,12 @@ If you want to request all posts, you just need to dispatch the `listPosts()` ac
 If you need to pass data, just pass an object as second parameter like `updatePost({params: {id: 5}, data:{name: "changedName", creator: "changedCreator"}})`.
 
 The function signature looks like this: `actionName({params: {}, data: {}})`
+
+#### Query params
+If you want to use query params just set the `queryParams` property. If you need it for just one action set it in the action options object. On the other hand, if you need it for all actions, set it in the Resource's options object.
+
+Please note that the Action's `queryParams` property is *more specific* than the Resource's. So if you set `queryParams` in an Action it will override the `queryParams` value of the Resource option!
+
 
 ## createStore(resource: Resource)
 This function will create an object you can pass to Vuex to add a store.

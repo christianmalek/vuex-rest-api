@@ -3,12 +3,11 @@ export default class Resource {
     constructor(baseURL, options = {}) {
         this.HTTPMethod = new Set(["get", "delete", "head", "post", "put", "patch"]);
         this.actions = {};
-        options.state = options.state || {};
-        options.axios = options.axios || axios;
         this.baseURL = baseURL;
         this.actions = {};
-        this.state = options.state;
-        this.axios = options.axios;
+        this.state = options.state || {};
+        this.axios = options.axios || axios;
+        this.queryParams = options.queryParams || false;
     }
     addAction(options) {
         options.method = options.method || "get";
@@ -23,7 +22,19 @@ export default class Resource {
         const completePathFn = (params) => this.baseURL + options.pathFn(params);
         this.actions[options.action] = {
             requestFn: (params = {}, data = {}) => {
-                const requestConfig = Object.assign({}, options.requestConfig, { params: params });
+                let queryParams;
+                // use action specific queryParams if set
+                if (options.queryParams !== undefined) {
+                    queryParams = options.queryParams;
+                    // otherwise use Resource-wide queryParams
+                }
+                else {
+                    queryParams = this.queryParams;
+                }
+                const requestConfig = Object.assign({}, options.requestConfig);
+                if (queryParams || options.requestConfig["paramsSerializer"] !== undefined) {
+                    requestConfig["params"] = params;
+                }
                 if (["post", "put", "patch"].indexOf(options.method) > -1) {
                     return this.axios[options.method](completePathFn(params), data, requestConfig);
                 }

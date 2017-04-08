@@ -21,28 +21,29 @@ export interface ResourceActionOptions {
   mutationSuccessFn?: Function;
   mutationFailureFn?: Function;
   requestConfig?: Object;
+  queryParams?: Boolean;
 }
 
 export interface ResourceOptions {
   state?: Object,
-  axios?: Object
+  axios?: Object,
+  queryParams?: Boolean;
 }
 
 export default class Resource {
   private baseURL: string;
-  private axios: Object;
   private HTTPMethod = new Set(["get", "delete", "head", "post", "put", "patch"]);
   public actions: ResourceActionMap = {};
   public state: Object;
+  private axios: Object;
+  private queryParams: Boolean;
 
   constructor(baseURL: string, options: ResourceOptions = {}) {
-    options.state = options.state || {};
-    options.axios = options.axios || axios;
-
     this.baseURL = baseURL;
     this.actions = {};
-    this.state = options.state;
-    this.axios = options.axios;
+    this.state = options.state || {};
+    this.axios = options.axios || axios;
+    this.queryParams = options.queryParams || false;
   }
 
   addAction(options: ResourceActionOptions): Resource {
@@ -62,10 +63,23 @@ export default class Resource {
 
     this.actions[options.action] = {
       requestFn: (params: Object = {}, data: Object = {}) => {
-        const requestConfig = Object.assign({}, options.requestConfig, { params: params })
+
+        let queryParams;
+        // use action specific queryParams if set
+        if (options.queryParams !== undefined) {
+          queryParams = options.queryParams;
+        // otherwise use Resource-wide queryParams
+        } else {
+          queryParams = this.queryParams;
+        }
+
+        const requestConfig = Object.assign({}, options.requestConfig);
+        if (queryParams || options.requestConfig["paramsSerializer"] !== undefined) {
+          requestConfig["params"] = params;
+        }
 
         if (["post", "put", "patch"].indexOf(options.method) > -1) {
-          return this.axios[options.method](completePathFn(params), data, requestConfig)
+          return this.axios[options.method](completePathFn(params), data, requestConfig);
         } else {
           return this.axios[options.method](completePathFn(params), requestConfig);
         }
