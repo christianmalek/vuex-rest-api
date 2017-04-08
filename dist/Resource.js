@@ -32,9 +32,12 @@ export default class Resource {
                     queryParams = this.queryParams;
                 }
                 const requestConfig = Object.assign({}, options.requestConfig);
-                if (queryParams || options.requestConfig["paramsSerializer"] !== undefined) {
+                const paramsSerializer = options.requestConfig["paramsSerializer"] !== undefined ||
+                    this.axios["defaults"]["paramsSerializer"] !== undefined;
+                if (queryParams || paramsSerializer) {
                     requestConfig["params"] = params;
                 }
+                console.log("test", this.axios["defaults"]);
                 if (["post", "put", "patch"].indexOf(options.method) > -1) {
                     return this.axios[options.method](completePathFn(params), data, requestConfig);
                 }

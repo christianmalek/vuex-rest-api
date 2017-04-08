@@ -159,6 +159,8 @@ If you want to use query params just set the `queryParams` property. If you need
 
 Please note that the Action's `queryParams` property is *more specific* than the Resource's. So if you set `queryParams` in an Action it will override the `queryParams` value of the Resource option!
 
+Params will also be appended to the URL if you set a `paramsSerializer` function in the `requestConfig` property of the `addAction` method or if you pass an axios instance with set `paramsSerializer` function in the Resource constructor.
+
 
 ## createStore(resource: Resource)
 This function will create an object you can pass to Vuex to add a store.
