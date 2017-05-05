@@ -80,8 +80,6 @@ export default class Resource {
           requestConfig["params"] = params;
         }
 
-        console.log("test", this.axios["defaults"])
-
         if (["post", "put", "patch"].indexOf(options.method) > -1) {
           return this.axios[options.method](completePathFn(params), data, requestConfig);
         } else {
