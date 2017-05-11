@@ -1,6 +1,6 @@
 import axios from "axios";
 
-interface ResourceAction {
+export interface ResourceAction {
   requestFn: Function,
   mutationSuccessFn: Function,
   mutationFailureFn: Function,
@@ -32,7 +32,7 @@ export interface ResourceOptions {
 
 export default class Resource {
   private baseURL: string;
-  private HTTPMethod = new Set(["get", "delete", "head", "post", "put", "patch"]);
+  private readonly HTTPMethod: Array<string> = ["get", "delete", "head", "post", "put", "patch"];
   public actions: ResourceActionMap = {};
   public state: Object;
   private axios: Object;
@@ -54,8 +54,8 @@ export default class Resource {
       throw new Error("'property' field must be set.");
     }
 
-    if (this.HTTPMethod.has(options.method) === false) {
-      const methods = [...this.HTTPMethod.values()].join(", ");
+    if (this.HTTPMethod.indexOf(options.method) > -1) {
+      const methods = this.HTTPMethod.join(", ");
       throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}`)
     }
 
@@ -79,8 +79,6 @@ export default class Resource {
         if (queryParams || paramsSerializer) {
           requestConfig["params"] = params;
         }
-
-        console.log("test", this.axios["defaults"])
 
         if (["post", "put", "patch"].indexOf(options.method) > -1) {
           return this.axios[options.method](completePathFn(params), data, requestConfig);
