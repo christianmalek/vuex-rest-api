@@ -1,16 +1,16 @@
 import Resource, { ResourceActionMap } from "./Resource";
 
-interface Store {
+export interface Store {
   state: Object;
   mutations: MutationMap;
   actions: ActionMap;
 }
 
-interface ActionMap {
+export interface ActionMap {
   [action: string]: Function
 }
 
-interface MutationMap {
+export interface MutationMap {
   [action: string]: Function
 }
 
@@ -94,9 +94,14 @@ class StoreCreator {
     Object.keys(actions).forEach((action) => {
       const { dispatchString, commitString, requestFn } = actions[action];
 
-      storeActions[dispatchString] = async ({ commit }, { params = {}, data = {} }: ActionParamsBody) => {
+      storeActions[dispatchString] = async ({ commit }, actionParams: ActionParamsBody = { params: {}, data: {} }) => {
+        if (!actionParams.params)
+          actionParams.params = {}
+        if (!actionParams.data)
+          actionParams.data = {}
+ 
         commit(commitString);
-        return requestFn(params, data)
+        return requestFn(actionParams.params, actionParams.data)
           .then((response) => {
             commit(`${commitString}_${this.successSuffix}`, response);
             return Promise.resolve(response);

@@ -9,7 +9,8 @@
     "build": "node build/build.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
-    "lint": "eslint --ext .js,.vue src test/unit/specs"
+    "lint": "eslint --ext .js,.vue src test/unit/specs",
+    "unpack": "npm install ../../vuex-rest-api-1.0.1.tgz"
   },
   "dependencies": {
     "vue": "^2.2.2",

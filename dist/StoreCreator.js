@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -6,40 +7,69 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-class StoreCreator {
-    constructor(resource) {
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var StoreCreator = (function () {
+    function StoreCreator(resource) {
         this.successSuffix = "SUCCEEDED";
         this.failureSuffix = "FAILED";
         this.resource = resource;
         this.store = this.createStore();
     }
-    createState() {
-        const state = Object.assign({
+    StoreCreator.prototype.createState = function () {
+        var state = Object.assign({
             pending: {},
             error: {}
         }, this.resource.state);
-        const actions = this.resource.actions;
-        Object.keys(actions).forEach((action) => {
-            const property = actions[action].property;
+        var actions = this.resource.actions;
+        Object.keys(actions).forEach(function (action) {
+            var property = actions[action].property;
             state[property] = null;
             state["pending"][property] = false;
             state["error"][property] = null;
         });
         return state;
-    }
-    createGetter() {
+    };
+    StoreCreator.prototype.createGetter = function () {
         return {};
-    }
-    createMutations() {
-        const mutations = {};
-        const actions = this.resource.actions;
-        Object.keys(actions).forEach((action) => {
-            const { property, commitString, mutationSuccessFn, mutationFailureFn } = actions[action];
-            mutations[`${commitString}`] = (state) => {
+    };
+    StoreCreator.prototype.createMutations = function () {
+        var _this = this;
+        var mutations = {};
+        var actions = this.resource.actions;
+        Object.keys(actions).forEach(function (action) {
+            var _a = actions[action], property = _a.property, commitString = _a.commitString, mutationSuccessFn = _a.mutationSuccessFn, mutationFailureFn = _a.mutationFailureFn;
+            mutations["" + commitString] = function (state) {
                 state.pending[property] = true;
                 state.error[property] = null;
             };
-            mutations[`${commitString}_${this.successSuffix}`] = (state, payload) => {
+            mutations[commitString + "_" + _this.successSuffix] = function (state, payload) {
                 state.pending[property] = false;
                 state.error[property] = null;
                 if (mutationSuccessFn) {
@@ -49,7 +79,7 @@ class StoreCreator {
                     state[property] = payload.data;
                 }
             };
-            mutations[`${commitString}_${this.failureSuffix}`] = (state, payload) => {
+            mutations[commitString + "_" + _this.failureSuffix] = function (state, payload) {
                 state.pending[property] = false;
                 state.error[property] = payload;
                 if (mutationFailureFn) {
@@ -61,35 +91,48 @@ class StoreCreator {
             };
         });
         return mutations;
-    }
-    createActions() {
-        const storeActions = {};
-        const actions = this.resource.actions;
-        Object.keys(actions).forEach((action) => {
-            const { dispatchString, commitString, requestFn } = actions[action];
-            storeActions[dispatchString] = ({ commit }, { params = {}, data = {} }) => __awaiter(this, void 0, void 0, function* () {
-                commit(commitString);
-                return requestFn(params, data)
-                    .then((response) => {
-                    commit(`${commitString}_${this.successSuffix}`, response);
-                    return Promise.resolve(response);
-                }, (error) => {
-                    commit(`${commitString}_${this.failureSuffix}`, error);
-                    return Promise.reject(error);
+    };
+    StoreCreator.prototype.createActions = function () {
+        var _this = this;
+        var storeActions = {};
+        var actions = this.resource.actions;
+        Object.keys(actions).forEach(function (action) {
+            var _a = actions[action], dispatchString = _a.dispatchString, commitString = _a.commitString, requestFn = _a.requestFn;
+            storeActions[dispatchString] = function (_a, actionParams) {
+                var commit = _a.commit;
+                if (actionParams === void 0) { actionParams = { params: {}, data: {} }; }
+                return __awaiter(_this, void 0, void 0, function () {
+                    var _this = this;
+                    return __generator(this, function (_a) {
+                        if (!actionParams.params)
+                            actionParams.params = {};
+                        if (!actionParams.data)
+                            actionParams.data = {};
+                        commit(commitString);
+                        return [2 /*return*/, requestFn(actionParams.params, actionParams.data)
+                                .then(function (response) {
+                                commit(commitString + "_" + _this.successSuffix, response);
+                                return Promise.resolve(response);
+                            }, function (error) {
+                                commit(commitString + "_" + _this.failureSuffix, error);
+                                return Promise.reject(error);
+                            })];
+                    });
                 });
-            });
+            };
         });
         return storeActions;
-    }
-    createStore() {
+    };
+    StoreCreator.prototype.createStore = function () {
         return {
             state: this.createState(),
             mutations: this.createMutations(),
             actions: this.createActions()
         };
-    }
-}
-export function createStore(resource) {
+    };
+    return StoreCreator;
+}());
+function createStore(resource) {
     return new StoreCreator(resource).store;
 }
-//# sourceMappingURL=StoreCreator.js.map
+exports.createStore = createStore;

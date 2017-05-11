@@ -47,8 +47,6 @@ updatePost, "PUT http://api.com/posts/2", state.posts,
 deletePost, "DELETE http://api.com/posts/2", state.posts
 */
 
-console.log(posts)
-
 const store = new Vuex.Store({
   ...posts
 })

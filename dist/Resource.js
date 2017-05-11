@@ -1,48 +1,53 @@
-import axios from "axios";
-export default class Resource {
-    constructor(baseURL, options = {}) {
-        this.HTTPMethod = new Set(["get", "delete", "head", "post", "put", "patch"]);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var axios_1 = require("axios");
+var Resource = (function () {
+    function Resource(baseURL, options) {
+        if (options === void 0) { options = {}; }
+        this.HTTPMethod = ["get", "delete", "head", "post", "put", "patch"];
         this.actions = {};
         this.baseURL = baseURL;
         this.actions = {};
         this.state = options.state || {};
-        this.axios = options.axios || axios;
+        this.axios = options.axios || axios_1.default;
         this.queryParams = options.queryParams || false;
     }
-    addAction(options) {
+    Resource.prototype.addAction = function (options) {
+        var _this = this;
         options.method = options.method || "get";
         options.requestConfig = options.requestConfig || {};
         if (!options.property) {
             throw new Error("'property' field must be set.");
         }
-        if (this.HTTPMethod.has(options.method) === false) {
-            const methods = [...this.HTTPMethod.values()].join(", ");
-            throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}`);
+        if (this.HTTPMethod.indexOf(options.method) === -1) {
+            var methods = this.HTTPMethod.join(", ");
+            throw new Error("Illegal HTTP method set. Following methods are allowed: " + methods + ". You chose \"" + options.method + "\".");
         }
-        const completePathFn = (params) => this.baseURL + options.pathFn(params);
+        var completePathFn = function (params) { return _this.baseURL + options.pathFn(params); };
         this.actions[options.action] = {
-            requestFn: (params = {}, data = {}) => {
-                let queryParams;
+            requestFn: function (params, data) {
+                if (params === void 0) { params = {}; }
+                if (data === void 0) { data = {}; }
+                var queryParams;
                 // use action specific queryParams if set
                 if (options.queryParams !== undefined) {
                     queryParams = options.queryParams;
                     // otherwise use Resource-wide queryParams
                 }
                 else {
-                    queryParams = this.queryParams;
+                    queryParams = _this.queryParams;
                 }
-                const requestConfig = Object.assign({}, options.requestConfig);
-                const paramsSerializer = options.requestConfig["paramsSerializer"] !== undefined ||
-                    this.axios["defaults"]["paramsSerializer"] !== undefined;
+                var requestConfig = Object.assign({}, options.requestConfig);
+                var paramsSerializer = options.requestConfig["paramsSerializer"] !== undefined ||
+                    _this.axios["defaults"]["paramsSerializer"] !== undefined;
                 if (queryParams || paramsSerializer) {
                     requestConfig["params"] = params;
                 }
-                console.log("test", this.axios["defaults"]);
                 if (["post", "put", "patch"].indexOf(options.method) > -1) {
-                    return this.axios[options.method](completePathFn(params), data, requestConfig);
+                    return _this.axios[options.method](completePathFn(params), data, requestConfig);
                 }
                 else {
-                    return this.axios[options.method](completePathFn(params), requestConfig);
+                    return _this.axios[options.method](completePathFn(params), requestConfig);
                 }
             },
             property: options.property,
@@ -52,13 +57,14 @@ export default class Resource {
             commitString: this.getCommitString(options.action)
         };
         return this;
-    }
-    getDispatchString(action) {
+    };
+    Resource.prototype.getDispatchString = function (action) {
         return action;
-    }
-    getCommitString(action) {
-        const capitalizedAction = action.replace(/([A-Z])/g, "_$1").toUpperCase();
+    };
+    Resource.prototype.getCommitString = function (action) {
+        var capitalizedAction = action.replace(/([A-Z])/g, "_$1").toUpperCase();
         return capitalizedAction;
-    }
-}
-//# sourceMappingURL=Resource.js.map
+    };
+    return Resource;
+}());
+exports.default = Resource;

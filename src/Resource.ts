@@ -54,9 +54,9 @@ export default class Resource {
       throw new Error("'property' field must be set.");
     }
 
-    if (this.HTTPMethod.indexOf(options.method) > -1) {
+    if (this.HTTPMethod.indexOf(options.method) === -1) {
       const methods = this.HTTPMethod.join(", ");
-      throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}`)
+      throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}. You chose "${options.method}".`)
     }
 
     const completePathFn = (params: Object) => this.baseURL + options.pathFn(params);
