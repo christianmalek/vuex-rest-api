@@ -7,9 +7,6 @@
 
 A Helper utility to simplify the usage of REST APIs with Vuex 2. Uses the popular HTTP client [axios](https://github.com/mzabriskie/axios) for requests. [Works](#usage-with-websanovavue-auth) with [websanova/vue-auth](https://github.com/websanova/vue-auth).
 
-## Still in development
-This piece of software is still work in progress. Error reports and improvement proposals are welcome!
-
 ## What is this good for
 If you want to connect a REST API with Vuex you'll find that there are a few repetitive steps. You need to request the data from the api (with an action) and set the state (via a mutation). This utility helps in *creating the stores* by setting up the state, mutations and actions.
 
@@ -22,6 +19,8 @@ npm install vuex-rest-api
 ```
 
 # API
+
+> Note: This readme assumes that you're using at least ES2015.
 
 ## Resource
 The Resource class represents multiple properties which are necessary for the `createStore(resource)` function to create the state, mutations and actions.
@@ -216,7 +215,6 @@ And use it in your Vue app!
 ```html
 <template>
   <div id="app">
-    <h1>Vrap Test</h1>
     <code>{{posts}}</code>
   </div>
 </template>
