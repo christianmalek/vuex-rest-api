@@ -2,8 +2,8 @@ import axios from "axios";
 
 export interface ResourceAction {
   requestFn: Function,
-  mutationSuccessFn: Function,
-  mutationFailureFn: Function,
+  onSuccess: Function,
+  onError: Function,
   property: string,
   dispatchString: string,
   commitString: string
@@ -17,20 +17,21 @@ export interface ResourceActionOptions {
   action: string;
   property: string;
   method: string;
-  pathFn: Function;
-  mutationSuccessFn?: Function;
-  mutationFailureFn?: Function;
+  path: Function | string;
+  onSuccess?: Function;
+  onError?: Function;
   requestConfig?: Object;
   queryParams?: Boolean;
 }
 
 export interface ResourceOptions {
+  baseURL: string,
   state?: Object,
   axios?: Object,
   queryParams?: Boolean;
 }
 
-export default class Resource {
+export class Resource {
   private baseURL: string;
   private readonly HTTPMethod: Array<string> = ["get", "delete", "head", "post", "put", "patch"];
   public actions: ResourceActionMap = {};
@@ -38,15 +39,15 @@ export default class Resource {
   private axios: Object;
   private queryParams: Boolean;
 
-  constructor(baseURL: string, options: ResourceOptions = {}) {
-    this.baseURL = baseURL;
+  constructor(options: ResourceOptions) {
+    this.baseURL = options.baseURL;
     this.actions = {};
     this.state = options.state || {};
     this.axios = options.axios || axios;
     this.queryParams = options.queryParams || false;
   }
 
-  addAction(options: ResourceActionOptions): Resource {
+  add(options: ResourceActionOptions): Resource {
     options.method = options.method || "get";
     options.requestConfig = options.requestConfig || {};
 
@@ -59,7 +60,14 @@ export default class Resource {
       throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}. You chose "${options.method}".`)
     }
 
-    const completePathFn = (params: Object) => this.baseURL + options.pathFn(params);
+    let completePathFn: Function;
+    if (typeof options.path === "function") {
+      const pathFn: Function = options.path
+      completePathFn = (params: Object) => this.baseURL + pathFn(params);
+    }
+    else {
+      completePathFn = () => this.baseURL + options.path
+    }
 
     this.actions[options.action] = {
       requestFn: (params: Object = {}, data: Object = {}) => {
@@ -87,8 +95,8 @@ export default class Resource {
         }
       },
       property: options.property,
-      mutationSuccessFn: options.mutationSuccessFn,
-      mutationFailureFn: options.mutationFailureFn,
+      onSuccess: options.onSuccess,
+      onError: options.onError,
       dispatchString: this.getDispatchString(options.action),
       commitString: this.getCommitString(options.action)
     };
@@ -105,3 +113,5 @@ export default class Resource {
     return capitalizedAction;
   }
 }
+
+export default Resource

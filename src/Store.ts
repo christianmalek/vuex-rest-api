@@ -22,7 +22,7 @@ interface ActionParamsBody {
 class StoreCreator {
   private resource: Resource;
   private successSuffix: string = "SUCCEEDED";
-  private failureSuffix: string = "FAILED";
+  private errorSuffix: string = "FAILED";
   public store: Store;
 
   constructor(resource: Resource) {
@@ -39,7 +39,12 @@ class StoreCreator {
     const actions = this.resource.actions;
     Object.keys(actions).forEach((action) => {
       const property = actions[action].property;
-      state[property] = null;
+
+      // if state is undefined set default value to null
+      if (state[property] === undefined) {
+        state[property] = null;
+      }
+
       state["pending"][property] = false;
       state["error"][property] = null;
     });
@@ -51,12 +56,12 @@ class StoreCreator {
     return {};
   }
 
-  createMutations(): MutationMap {
+  createMutations(defaultState: Object): MutationMap {
     const mutations = {};
 
     const actions = this.resource.actions;
     Object.keys(actions).forEach((action) => {
-      const { property, commitString, mutationSuccessFn, mutationFailureFn } = actions[action];
+      const { property, commitString, onSuccess, onError } = actions[action];
 
       mutations[`${commitString}`] = (state) => {
         state.pending[property] = true;
@@ -66,20 +71,21 @@ class StoreCreator {
         state.pending[property] = false;
         state.error[property] = null;
 
-        if (mutationSuccessFn) {
-          mutationSuccessFn(state, payload);
+        if (onSuccess) {
+          onSuccess(state, payload);
         } else {
           state[property] = payload.data;
         }
       };
-      mutations[`${commitString}_${this.failureSuffix}`] = (state, payload) => {
+      mutations[`${commitString}_${this.errorSuffix}`] = (state, payload) => {
         state.pending[property] = false;
         state.error[property] = payload;
 
-        if (mutationFailureFn) {
-          mutationFailureFn(state, payload);
+        if (onError) {
+          onError(state, payload);
         } else {
-          state[property] = null;
+          // sets property to it's default value in case of an error
+          state[property] = defaultState[property];
         }
       };
     });
@@ -99,14 +105,14 @@ class StoreCreator {
           actionParams.params = {}
         if (!actionParams.data)
           actionParams.data = {}
- 
+
         commit(commitString);
         return requestFn(actionParams.params, actionParams.data)
           .then((response) => {
             commit(`${commitString}_${this.successSuffix}`, response);
             return Promise.resolve(response);
           }, (error) => {
-            commit(`${commitString}_${this.failureSuffix}`, error);
+            commit(`${commitString}_${this.errorSuffix}`, error);
             return Promise.reject(error)
           });
       };
@@ -116,9 +122,11 @@ class StoreCreator {
   }
 
   createStore(): Store {
+    const state = this.createState()
+
     return {
-      state: this.createState(),
-      mutations: this.createMutations(),
+      state,
+      mutations: this.createMutations(state),
       actions: this.createActions()
     };
   }

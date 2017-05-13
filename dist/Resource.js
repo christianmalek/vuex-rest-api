@@ -2,17 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = require("axios");
 var Resource = (function () {
-    function Resource(baseURL, options) {
-        if (options === void 0) { options = {}; }
+    function Resource(options) {
         this.HTTPMethod = ["get", "delete", "head", "post", "put", "patch"];
         this.actions = {};
-        this.baseURL = baseURL;
+        this.baseURL = options.baseURL;
         this.actions = {};
         this.state = options.state || {};
         this.axios = options.axios || axios_1.default;
         this.queryParams = options.queryParams || false;
     }
-    Resource.prototype.addAction = function (options) {
+    Resource.prototype.add = function (options) {
         var _this = this;
         options.method = options.method || "get";
         options.requestConfig = options.requestConfig || {};
@@ -23,7 +22,14 @@ var Resource = (function () {
             var methods = this.HTTPMethod.join(", ");
             throw new Error("Illegal HTTP method set. Following methods are allowed: " + methods + ". You chose \"" + options.method + "\".");
         }
-        var completePathFn = function (params) { return _this.baseURL + options.pathFn(params); };
+        var completePathFn;
+        if (typeof options.path === "function") {
+            var pathFn_1 = options.path;
+            completePathFn = function (params) { return _this.baseURL + pathFn_1(params); };
+        }
+        else {
+            completePathFn = function () { return _this.baseURL + options.path; };
+        }
         this.actions[options.action] = {
             requestFn: function (params, data) {
                 if (params === void 0) { params = {}; }
@@ -51,8 +57,8 @@ var Resource = (function () {
                 }
             },
             property: options.property,
-            mutationSuccessFn: options.mutationSuccessFn,
-            mutationFailureFn: options.mutationFailureFn,
+            onSuccess: options.onSuccess,
+            onError: options.onError,
             dispatchString: this.getDispatchString(options.action),
             commitString: this.getCommitString(options.action)
         };
@@ -67,4 +73,5 @@ var Resource = (function () {
     };
     return Resource;
 }());
+exports.Resource = Resource;
 exports.default = Resource;

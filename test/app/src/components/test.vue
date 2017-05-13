@@ -1,6 +1,5 @@
 <template>
-  <h1>
-    Test component</h1>
+  <h1>Test component</h1>
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
@@ -16,11 +15,13 @@ export default {
     ...mapState(["post", "posts", "error", "pending"])
   },
   methods: {
-    ...mapActions(['getPost', 'listPosts', "updatePost", "deletePost"])
+    ...mapActions(['getPost', 'listPosts', "updatePost"])
   },
   async mounted () {
-    (await this.deletePost({ params: { id: 5 }, data: { a: 12, b: 32 } })).data
+    let post = (await this.getPost({ params: { id: 5 } })).data
+    console.log(post)
     this.listPosts()
+    this.getPost()
   }
 }
 </script>
