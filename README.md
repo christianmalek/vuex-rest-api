@@ -9,15 +9,6 @@ Changelog to Version 1:
 - `createStore` is removed, therefore `Vapi` has the method `getStore`
 - `baseURL` is now part of the constructor's `options` object
 
-state properties:
-- no error === null
-- error === the promise error
-- pending === true
-- not pending === false
-- default state (if no default state passed in constructor): null
-- default state: passed state
-- state: payload.data
-
 [![](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/vuejs/awesome-vue)
 [![](https://img.shields.io/badge/vuex-2.x-brightgreen.svg)](https://vuejs.org)
 [![npm](https://img.shields.io/npm/v/vuex-rest-api.svg)](https://www.npmjs.com/package/vuex-rest-api)
