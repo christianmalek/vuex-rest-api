@@ -147,6 +147,21 @@ The parameter `options` consists of the following properties:
 }
 ```
 
+##### shorthand syntax
+You can also use the http method instead of `add` to omit to set the `options.method` like this. This works with get, delete, post, put and patch:
+```js
+// regular way
+vrap.add({
+  method: "delete"
+  // other options...  
+})
+
+//shorthand
+vrap.delete({
+  // other options...
+})
+```
+
 #### `# property` (required)
 - **Type**: `string`  
 - **Usage**: The property of the state which should be automatically changed if the resolve is successfully.
@@ -288,11 +303,11 @@ actionName({params: {}, data: {}})`
 Please note that you do **not** have to set params, data or the object containing them if you don't need them.
 
 ### Query params
-If you want to use query params just set the `queryParams` property. If you need it for just one action set it in the action options object. On the other hand, if you need it for all actions, set it in the Resource's options object.
+If you want to use query params just set the `queryParams` property either in the constructor or the options from the add method. If you need it for just one action set it in the corresponding method. On the other hand, if you need it for all actions, set it in the constructor.
 
-Please note that the Action's `queryParams` property is *more specific* than the Resource's. So if you set `queryParams` in an Action it will override the `queryParams` value of the Resource option!
+Please note that the method's `queryParams` property is *more specific* than the constructor's. So if you set `queryParams` in a method's options it will override the `queryParams` value of the constructor option!
 
-Params will also be appended to the URL if you set a `paramsSerializer` function in the `requestConfig` property of the `addAction` method or if you pass an axios instance with set `paramsSerializer` function in the Resource constructor.
+Params will also be appended to the URL if you set a `paramsSerializer` function in the `requestConfig` property of the `add` method or if you pass an axios instance with set `paramsSerializer` function in the Resource constructor.
 
 ### Usage with websanova/vue-auth
 
