@@ -1,7 +1,7 @@
 import { createStore, Store } from "./Store"
 import { Resource, ResourceActionOptions, ResourceOptions } from "./Resource"
 
-export class Vrex {
+export class Vapi {
     private resource: Resource
 
     constructor(options: ResourceOptions) {
@@ -29,7 +29,7 @@ export class Vrex {
         return this.add(Object.assign(options, { method: "patch" }))
     }
 
-    add(options: ResourceActionOptions): Vrex {
+    add(options: ResourceActionOptions): Vapi {
         this.resource.add(options)
         return this
     }
@@ -39,4 +39,4 @@ export class Vrex {
     }
 }
 
-export default Vrex
+export default Vapi

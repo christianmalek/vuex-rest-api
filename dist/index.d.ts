@@ -1,14 +1,14 @@
 import { Store } from "./Store";
 import { ResourceActionOptions, ResourceOptions } from "./Resource";
-export declare class Vrex {
+export declare class Vapi {
     private resource;
     constructor(options: ResourceOptions);
-    get(options: ResourceActionOptions): Vrex;
-    delete(options: ResourceActionOptions): Vrex;
-    post(options: ResourceActionOptions): Vrex;
-    put(options: ResourceActionOptions): Vrex;
-    patch(options: ResourceActionOptions): Vrex;
-    add(options: ResourceActionOptions): Vrex;
+    get(options: ResourceActionOptions): Vapi;
+    delete(options: ResourceActionOptions): Vapi;
+    post(options: ResourceActionOptions): Vapi;
+    put(options: ResourceActionOptions): Vapi;
+    patch(options: ResourceActionOptions): Vapi;
+    add(options: ResourceActionOptions): Vapi;
     getStore(): Store;
 }
-export default Vrex;
+export default Vapi;

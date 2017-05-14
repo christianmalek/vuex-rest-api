@@ -2,34 +2,34 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Store_1 = require("./Store");
 var Resource_1 = require("./Resource");
-var Vrex = (function () {
-    function Vrex(options) {
+var Vapi = (function () {
+    function Vapi(options) {
         this.resource = new Resource_1.Resource(options);
         return this;
     }
-    Vrex.prototype.get = function (options) {
+    Vapi.prototype.get = function (options) {
         return this.add(Object.assign(options, { method: "get" }));
     };
-    Vrex.prototype.delete = function (options) {
+    Vapi.prototype.delete = function (options) {
         return this.add(Object.assign(options, { method: "delete" }));
     };
-    Vrex.prototype.post = function (options) {
+    Vapi.prototype.post = function (options) {
         return this.add(Object.assign(options, { method: "post" }));
     };
-    Vrex.prototype.put = function (options) {
+    Vapi.prototype.put = function (options) {
         return this.add(Object.assign(options, { method: "put" }));
     };
-    Vrex.prototype.patch = function (options) {
+    Vapi.prototype.patch = function (options) {
         return this.add(Object.assign(options, { method: "patch" }));
     };
-    Vrex.prototype.add = function (options) {
+    Vapi.prototype.add = function (options) {
         this.resource.add(options);
         return this;
     };
-    Vrex.prototype.getStore = function () {
+    Vapi.prototype.getStore = function () {
         return Store_1.createStore(this.resource);
     };
-    return Vrex;
+    return Vapi;
 }());
-exports.Vrex = Vrex;
-exports.default = Vrex;
+exports.Vapi = Vapi;
+exports.default = Vapi;

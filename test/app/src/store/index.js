@@ -1,11 +1,11 @@
 import Vuex from "vuex"
 import Vue from "vue"
-import Vrex from "../../../../dist"
+import Vapi from "../../../../dist"
 
 Vue.use(Vuex)
 
 const posts =
-  new Vrex({
+  new Vapi({
     baseURL: "https://jsonplaceholder.typicode.com",
     state: {
       posts: []
@@ -14,21 +14,19 @@ const posts =
     .get({
       action: "listPosts",
       property: "posts",
-      path: () => `/posts`
+      path: "/posts"
     })
     .get({
       action: "getPost",
       property: "post",
       path: ({ id }) => `/posts/${id}`
     })
-    .put({
+    .post({
       action: "updatePost",
       property: "post",
       path: ({ id }) => `/posts/${id}`
     })
     .getStore()
-
-console.log(posts)
 
 const store = new Vuex.Store({
   ...posts
