@@ -141,7 +141,7 @@ The parameter `options` consists of the following properties:
 - **Usage**: The name of the action.
 ```js
 {
-  method: "getPosts"
+  action: "getPosts"
 }
 ```
 
