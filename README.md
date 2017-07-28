@@ -148,7 +148,13 @@ The parameter `options` consists of the following properties:
 #### `# method`
 - **Type**: `string`  
 - **Default**: `"get"`  
-- **Usage**: The HTTP method to request the API. Following HTTP Methods are allowed at the moment: get, delete, head, post, put, patch
+- **Usage**: The HTTP method to request the API. Following HTTP Methods are allowed at the moment:
+  - get
+  - delete
+  - head
+  - post
+  - put
+  - patch
 
 ```js
 {
@@ -203,7 +209,7 @@ Maybe the API endpoint needs no parameters. Then you can use a string like this:
 #### `# onSuccess`
 - **Type**: `Function`  
 - **Default**: `undefined`  
-- **Usage**: This function will be called after successfully resolving the action. If you define this property, only the corresponding pending annmd error properties will be set, but not `state[property]`.
+- **Usage**: This function will be called after successfully resolving the action. If you define this property, only the corresponding pending and error properties will be set, but not `state[property]`.
 ```js
 {
   onSuccess: (state, payload) => {
