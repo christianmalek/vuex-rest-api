@@ -62,15 +62,15 @@ const options = {
   // The function which returns the rest of the API address (without the base URL).
   // The method signature is (params: Object).
   pathFn: Function,
-  // This function will be called after successfully resolving the action.
-  // If you define this property, only the corresponding
-  // pending annmd error properties will be set, but not state[property].
-  // The method signature is (state, error).
-  mutationSuccessFn: Function,
   // This function will be called if the action request fails.
   // If you define this property, only the corresponding
   // pending and error properties will be set, but not state[property].
   // The method signature is (state, payload).
+  mutationSuccessFn: Function,
+  // This function will be called after successfully resolving the action.
+  // If you define this property, only the corresponding
+  // pending annmd error properties will be set, but not state[property].
+  // The method signature is (state, error).
   mutationFailureFn: Function,
   // If you need a specific request config, you can here pass
   // an axios.requestConfig object. Please note that the passed
