@@ -34,7 +34,10 @@ class StoreCreator {
 
   constructor(resource: Resource, options: StoreOptions) {
     this.resource = resource
-    this.options = options
+    this.options = Object.assign({
+      createStateFn: false
+    }, options)
+
     this.store = this.createStore()
   }
 

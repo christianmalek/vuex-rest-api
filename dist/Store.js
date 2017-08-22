@@ -41,7 +41,9 @@ var StoreCreator = (function () {
         this.successSuffix = "SUCCEEDED";
         this.errorSuffix = "FAILED";
         this.resource = resource;
-        this.options = options;
+        this.options = Object.assign({
+            createStateFn: false
+        }, options);
         this.store = this.createStore();
     }
     StoreCreator.prototype.createState = function () {
