@@ -8,7 +8,7 @@ Changelog to Version 1:
 - shorthand methods for get, delete, post, put, patch
 - `createStore` is removed, therefore `Vapi` has the method `getStore`
 - `baseURL` is now part of the constructor's `options` object
-- added option [createStateFn](#createstatefn) to return the state as a function
+- added option [createStateFn](#-createstatefn) to return the state as a function
 
 [![](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/vuejs/awesome-vue)
 [![](https://img.shields.io/badge/vuex-2.x-brightgreen.svg)](https://vuejs.org)
