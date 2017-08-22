@@ -1,4 +1,4 @@
-import { Store } from "./Store";
+import { Store, StoreOptions } from "./Store";
 import { ResourceActionOptions, ResourceOptions } from "./Resource";
 export declare class Vapi {
     private resource;
@@ -9,6 +9,6 @@ export declare class Vapi {
     put(options: ResourceActionOptions): Vapi;
     patch(options: ResourceActionOptions): Vapi;
     add(options: ResourceActionOptions): Vapi;
-    getStore(): Store;
+    getStore(options?: StoreOptions): Store;
 }
 export default Vapi;

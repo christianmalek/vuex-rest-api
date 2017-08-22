@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios"
 
 export interface ResourceAction {
   requestFn: Function,
@@ -10,60 +10,60 @@ export interface ResourceAction {
 }
 
 export interface ResourceActionMap {
-  [action: string]: ResourceAction;
+  [action: string]: ResourceAction
 }
 
 export interface ResourceActionOptions {
-  action: string;
-  property: string;
-  method: string;
-  path: Function | string;
-  onSuccess?: Function;
-  onError?: Function;
-  requestConfig?: Object;
-  queryParams?: Boolean;
+  action: string
+  property: string
+  method: string
+  path: Function | string
+  onSuccess?: Function
+  onError?: Function
+  requestConfig?: Object
+  queryParams?: Boolean
 }
 
 export interface ResourceOptions {
   baseURL: string,
   state?: Object,
   axios?: Object,
-  queryParams?: Boolean;
+  queryParams?: Boolean
 }
 
 export class Resource {
-  private baseURL: string;
-  private readonly HTTPMethod: Array<string> = ["get", "delete", "head", "post", "put", "patch"];
-  public actions: ResourceActionMap = {};
-  public state: Object;
-  private axios: Object;
-  private queryParams: Boolean;
+  private baseURL: string
+  private readonly HTTPMethod: Array<string> = ["get", "delete", "head", "post", "put", "patch"]
+  public actions: ResourceActionMap = {}
+  public state: Object
+  private axios: Object
+  private queryParams: Boolean
 
   constructor(options: ResourceOptions) {
-    this.baseURL = options.baseURL;
-    this.actions = {};
-    this.state = options.state || {};
-    this.axios = options.axios || axios;
-    this.queryParams = options.queryParams || false;
+    this.baseURL = options.baseURL
+    this.actions = {}
+    this.state = options.state || {}
+    this.axios = options.axios || axios
+    this.queryParams = options.queryParams || false
   }
 
   add(options: ResourceActionOptions): Resource {
-    options.method = options.method || "get";
-    options.requestConfig = options.requestConfig || {};
+    options.method = options.method || "get"
+    options.requestConfig = options.requestConfig || {}
 
     if (!options.property) {
-      throw new Error("'property' field must be set.");
+      throw new Error("'property' field must be set.")
     }
 
     if (this.HTTPMethod.indexOf(options.method) === -1) {
-      const methods = this.HTTPMethod.join(", ");
+      const methods = this.HTTPMethod.join(", ")
       throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}. You chose "${options.method}".`)
     }
 
-    let completePathFn: Function;
+    let completePathFn: Function
     if (typeof options.path === "function") {
       const pathFn: Function = options.path
-      completePathFn = (params: Object) => this.baseURL + pathFn(params);
+      completePathFn = (params: Object) => this.baseURL + pathFn(params)
     }
     else {
       completePathFn = () => this.baseURL + options.path
@@ -72,26 +72,26 @@ export class Resource {
     this.actions[options.action] = {
       requestFn: (params: Object = {}, data: Object = {}) => {
 
-        let queryParams;
+        let queryParams
         // use action specific queryParams if set
         if (options.queryParams !== undefined) {
-          queryParams = options.queryParams;
+          queryParams = options.queryParams
           // otherwise use Resource-wide queryParams
         } else {
-          queryParams = this.queryParams;
+          queryParams = this.queryParams
         }
 
-        const requestConfig = Object.assign({}, options.requestConfig);
+        const requestConfig = Object.assign({}, options.requestConfig)
         const paramsSerializer = options.requestConfig["paramsSerializer"] !== undefined ||
           this.axios["defaults"]["paramsSerializer"] !== undefined
         if (queryParams || paramsSerializer) {
-          requestConfig["params"] = params;
+          requestConfig["params"] = params
         }
 
         if (["post", "put", "patch"].indexOf(options.method) > -1) {
-          return this.axios[options.method](completePathFn(params), data, requestConfig);
+          return this.axios[options.method](completePathFn(params), data, requestConfig)
         } else {
-          return this.axios[options.method](completePathFn(params), requestConfig);
+          return this.axios[options.method](completePathFn(params), requestConfig)
         }
       },
       property: options.property,
@@ -99,18 +99,18 @@ export class Resource {
       onError: options.onError,
       dispatchString: this.getDispatchString(options.action),
       commitString: this.getCommitString(options.action)
-    };
+    }
 
-    return this;
+    return this
   }
 
   private getDispatchString(action: string): string {
-    return action;
+    return action
   }
 
   private getCommitString(action: string): string {
-    const capitalizedAction: string = action.replace(/([A-Z])/g, "_$1").toUpperCase();
-    return capitalizedAction;
+    const capitalizedAction: string = action.replace(/([A-Z])/g, "_$1").toUpperCase()
+    return capitalizedAction
   }
 }
 

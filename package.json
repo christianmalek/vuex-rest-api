@@ -5,7 +5,8 @@
   "author": "Christian Malek",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.16.1"
+    "axios": "^0.16.1",
+    "lodash.clonedeep": "^4.5.0"
   },
   "scripts": {
     "build": "tsc -p ."

@@ -35,18 +35,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var cloneDeep = require("lodash.clonedeep");
 var StoreCreator = (function () {
-    function StoreCreator(resource) {
+    function StoreCreator(resource, options) {
         this.successSuffix = "SUCCEEDED";
         this.errorSuffix = "FAILED";
         this.resource = resource;
+        this.options = options;
         this.store = this.createStore();
     }
     StoreCreator.prototype.createState = function () {
+        if (this.options.createStateFn) {
+            return this.createStateFn();
+        }
+        else {
+            return this.createStateObject();
+        }
+    };
+    StoreCreator.prototype.createStateObject = function () {
+        var resourceState = cloneDeep(this.resource.state);
         var state = Object.assign({
             pending: {},
             error: {}
-        }, this.resource.state);
+        }, resourceState);
         var actions = this.resource.actions;
         Object.keys(actions).forEach(function (action) {
             var property = actions[action].property;
@@ -58,6 +69,27 @@ var StoreCreator = (function () {
             state["error"][property] = null;
         });
         return state;
+    };
+    StoreCreator.prototype.createStateFn = function () {
+        var _this = this;
+        return function () {
+            var resourceState = cloneDeep(_this.resource.state);
+            var state = Object.assign({
+                pending: {},
+                error: {}
+            }, resourceState);
+            var actions = _this.resource.actions;
+            Object.keys(actions).forEach(function (action) {
+                var property = actions[action].property;
+                // if state is undefined set default value to null
+                if (state[property] === undefined) {
+                    state[property] = null;
+                }
+                state["pending"][property] = false;
+                state["error"][property] = null;
+            });
+            return state;
+        };
     };
     StoreCreator.prototype.createGetter = function () {
         return {};
@@ -137,7 +169,7 @@ var StoreCreator = (function () {
     };
     return StoreCreator;
 }());
-function createStore(resource) {
-    return new StoreCreator(resource).store;
+function createStore(resource, options) {
+    return new StoreCreator(resource, options).store;
 }
 exports.createStore = createStore;

@@ -26,8 +26,9 @@ var Vapi = (function () {
         this.resource.add(options);
         return this;
     };
-    Vapi.prototype.getStore = function () {
-        return Store_1.createStore(this.resource);
+    Vapi.prototype.getStore = function (options) {
+        if (options === void 0) { options = {}; }
+        return Store_1.createStore(this.resource, options);
     };
     return Vapi;
 }());

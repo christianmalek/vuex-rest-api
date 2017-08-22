@@ -1,9 +1,15 @@
-import Resource, { ResourceActionMap } from "./Resource";
+import Resource, { ResourceActionMap } from "./Resource"
+import * as cloneDeep from "lodash.clonedeep"
 
 export interface Store {
-  state: Object;
-  mutations: MutationMap;
-  actions: ActionMap;
+  state: Object
+  mutations: MutationMap
+  actions: ActionMap
+}
+
+export interface StoreOptions {
+  // see "module reuse" under https://vuex.vuejs.org/en/modules.html
+  createStateFn?: Boolean
 }
 
 export interface ActionMap {
@@ -15,90 +21,128 @@ export interface MutationMap {
 }
 
 interface ActionParamsBody {
-  params: Object;
-  data: Object;
+  params: Object
+  data: Object
 }
 
 class StoreCreator {
-  private resource: Resource;
-  private successSuffix: string = "SUCCEEDED";
-  private errorSuffix: string = "FAILED";
-  public store: Store;
+  private resource: Resource
+  private options: StoreOptions
+  private successSuffix: string = "SUCCEEDED"
+  private errorSuffix: string = "FAILED"
+  public store: Store
 
-  constructor(resource: Resource) {
-    this.resource = resource;
-    this.store = this.createStore();
+  constructor(resource: Resource, options: StoreOptions) {
+    this.resource = resource
+    this.options = options
+    this.store = this.createStore()
   }
 
-  createState(): Object {
+  createState(): Object | Function {
+    if (this.options.createStateFn) {
+      return this.createStateFn()
+    } else {
+      return this.createStateObject()
+    }
+  }
+
+  private createStateObject(): Object {
+    const resourceState: Object = cloneDeep(this.resource.state)
+
     const state: Object = Object.assign({
       pending: {},
       error: {}
-    }, this.resource.state);
+    }, resourceState)
 
-    const actions = this.resource.actions;
+    const actions = this.resource.actions
     Object.keys(actions).forEach((action) => {
-      const property = actions[action].property;
+      const property = actions[action].property
 
       // if state is undefined set default value to null
       if (state[property] === undefined) {
-        state[property] = null;
+        state[property] = null
       }
 
-      state["pending"][property] = false;
-      state["error"][property] = null;
-    });
+      state["pending"][property] = false
+      state["error"][property] = null
+    })
 
-    return state;
+    return state
+  }
+
+  private createStateFn(): Function {
+    return (): Object => {
+      const resourceState: Object = cloneDeep(this.resource.state)
+
+      const state: Object = Object.assign({
+        pending: {},
+        error: {}
+      }, resourceState)
+
+      const actions = this.resource.actions
+      Object.keys(actions).forEach((action) => {
+        const property = actions[action].property
+
+        // if state is undefined set default value to null
+        if (state[property] === undefined) {
+          state[property] = null
+        }
+
+        state["pending"][property] = false
+        state["error"][property] = null
+      })
+
+      return state
+    }
   }
 
   createGetter(): Object {
-    return {};
+    return {}
   }
 
   createMutations(defaultState: Object): MutationMap {
-    const mutations = {};
+    const mutations = {}
 
-    const actions = this.resource.actions;
+    const actions = this.resource.actions
     Object.keys(actions).forEach((action) => {
-      const { property, commitString, onSuccess, onError } = actions[action];
+      const { property, commitString, onSuccess, onError } = actions[action]
 
       mutations[`${commitString}`] = (state) => {
-        state.pending[property] = true;
-        state.error[property] = null;
-      };
+        state.pending[property] = true
+        state.error[property] = null
+      }
       mutations[`${commitString}_${this.successSuffix}`] = (state, payload) => {
-        state.pending[property] = false;
-        state.error[property] = null;
+        state.pending[property] = false
+        state.error[property] = null
 
         if (onSuccess) {
-          onSuccess(state, payload);
+          onSuccess(state, payload)
         } else {
-          state[property] = payload.data;
+          state[property] = payload.data
         }
-      };
+      }
       mutations[`${commitString}_${this.errorSuffix}`] = (state, payload) => {
-        state.pending[property] = false;
-        state.error[property] = payload;
+        state.pending[property] = false
+        state.error[property] = payload
 
         if (onError) {
-          onError(state, payload);
+          onError(state, payload)
         } else {
           // sets property to it's default value in case of an error
-          state[property] = defaultState[property];
+          state[property] = defaultState[property]
         }
-      };
-    });
+      }
+    })
 
-    return mutations;
+    return mutations
   }
 
   createActions(): ActionMap {
-    const storeActions = {};
+    const storeActions = {}
 
-    const actions = this.resource.actions;
+    const actions = this.resource.actions
     Object.keys(actions).forEach((action) => {
-      const { dispatchString, commitString, requestFn } = actions[action];
+      const { dispatchString, commitString, requestFn } = actions[action]
 
       storeActions[dispatchString] = async ({ commit }, actionParams: ActionParamsBody = { params: {}, data: {} }) => {
         if (!actionParams.params)
@@ -106,19 +150,19 @@ class StoreCreator {
         if (!actionParams.data)
           actionParams.data = {}
 
-        commit(commitString);
+        commit(commitString)
         return requestFn(actionParams.params, actionParams.data)
           .then((response) => {
-            commit(`${commitString}_${this.successSuffix}`, response);
-            return Promise.resolve(response);
+            commit(`${commitString}_${this.successSuffix}`, response)
+            return Promise.resolve(response)
           }, (error) => {
-            commit(`${commitString}_${this.errorSuffix}`, error);
+            commit(`${commitString}_${this.errorSuffix}`, error)
             return Promise.reject(error)
-          });
-      };
-    });
+          })
+      }
+    })
 
-    return storeActions;
+    return storeActions
   }
 
   createStore(): Store {
@@ -128,10 +172,10 @@ class StoreCreator {
       state,
       mutations: this.createMutations(state),
       actions: this.createActions()
-    };
+    }
   }
 }
 
-export function createStore(resource: Resource): Store {
-  return new StoreCreator(resource).store;
+export function createStore(resource: Resource, options: StoreOptions): Store {
+  return new StoreCreator(resource, options).store
 }

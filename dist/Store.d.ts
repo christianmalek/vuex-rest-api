@@ -4,10 +4,13 @@ export interface Store {
     mutations: MutationMap;
     actions: ActionMap;
 }
+export interface StoreOptions {
+    createStateFn?: Boolean;
+}
 export interface ActionMap {
     [action: string]: Function;
 }
 export interface MutationMap {
     [action: string]: Function;
 }
-export declare function createStore(resource: Resource): Store;
+export declare function createStore(resource: Resource, options: StoreOptions): Store;
