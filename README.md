@@ -8,6 +8,7 @@ Changelog to Version 1:
 - shorthand methods for get, delete, post, put, patch
 - `createStore` is removed, therefore `Vapi` has the method `getStore`
 - `baseURL` is now part of the constructor's `options` object
+- added option [createStateFn](#createstatefn) to return the state as a function
 
 [![](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/vuejs/awesome-vue)
 [![](https://img.shields.io/badge/vuex-2.x-brightgreen.svg)](https://vuejs.org)
@@ -262,9 +263,21 @@ Maybe the API endpoint needs no parameters. Then you can use a string like this:
 }
 ```
 
-### `getStore():Object`
+### `getStore(options):Object`
 
 Creates an object you can pass to Vuex to add a store.
+
+The parameter `options` consists of the following properties:
+
+#### `# createStateFn`
+- **Type**: `boolean`  
+- **Default**: `false`
+- **Usage**: Decides if the state should be returned as a function or an object. This option has to be changed if you want to share the state of your created store. Read chapter *module reuse* in the [Vuex documentation](https://vuex.vuejs.org/en/modules.html) for more details.
+```js
+{
+  createStateFn: false
+}
+```
 
 The returned object looks like this if you would call it with the settings of the example:
 ```js
@@ -280,7 +293,7 @@ The returned object looks like this if you would call it with the settings of th
     },
     posts:   [],
     post:    null
-  },
+  }),
   mutations: {
     LIST_POSTS:            Function,
     LIST_POSTS_SUCCEEDED:  Function,
@@ -301,6 +314,7 @@ The returned object looks like this if you would call it with the settings of th
   }
 }
 ```
+
 As you can see, it just created the store for us. No more, no less.
 
 ## Miscellaneous
