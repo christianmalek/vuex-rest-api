@@ -338,7 +338,7 @@ Please note that the method's `queryParams` property is *more specific* than the
 
 Params will also be appended to the URL if you set a `paramsSerializer` function in the `requestConfig` property of the `add` method or if you pass an axios instance with set `paramsSerializer` function in the Resource constructor.
 
-### Add additional actions and mutations to the store
+### Add additional state, actions and mutations to the store
 As mentioned before, *vuex-rest-api* is just creating a regular store object. So you can add arbitrary actions, mutations and state properties to the store as written in the [Vuex documentation](https://vuex.vuejs.org/en/core-concepts.html):
 
 ```js
