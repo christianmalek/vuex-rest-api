@@ -338,6 +338,25 @@ Please note that the method's `queryParams` property is *more specific* than the
 
 Params will also be appended to the URL if you set a `paramsSerializer` function in the `requestConfig` property of the `add` method or if you pass an axios instance with set `paramsSerializer` function in the Resource constructor.
 
+### Add additional actions and mutations to the store
+As mentioned before, *vuex-rest-api* is just creating a regular store object. So you can add arbitrary actions, mutations and state properties to the store as written in the [Vuex documentation](https://vuex.vuejs.org/en/core-concepts.html):
+
+```js
+// resource creation hidden for the sake of brevity
+
+// create the store
+posts = postsResource.getStore()
+
+// add a simple counter to the store
+posts.state.counter = 0
+posts.mutations.increment = state => {
+  state.counter++
+}
+posts.actions.increment = context => {
+  context.commit("increment")
+}
+```
+
 ### Usage with websanova/vue-auth
 
 If you want to use this little helper with vue-auth you need to use vue-axios. Just follow the steps of both readme's. Then just pass the instance axios to the Resource object:

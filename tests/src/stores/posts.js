@@ -13,4 +13,13 @@ const posts = new Vapi({
   })
   .getStore()
 
+// add other properties to store
+posts.state.counter = 0
+posts.mutations.increment = state => {
+  state.counter++
+}
+posts.actions.increment = context => {
+  context.commit("increment")
+}
+
 export default posts

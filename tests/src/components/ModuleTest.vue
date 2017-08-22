@@ -1,7 +1,9 @@
 <template>
   <div>
     <h1>Module Test</h1>
-    <p>{{ posts.length }}</p>
+    <p>Posts: {{ posts.length }}</p>
+    <p>Counter: {{ counter }}</p>
+    <button @click="increment">increase counter</button>
   </div>
 </template>
 
@@ -13,11 +15,13 @@ export default {
     this.getPosts()
   },
   computed: mapState({
-    posts: state => state.posts.posts
+    posts: state => state.posts.posts,
+    counter: state => state.posts.counter
   }),
   methods: {
     ...mapActions([
-      "getPosts"
+      "getPosts",
+      "increment"
     ])
   }
 }
