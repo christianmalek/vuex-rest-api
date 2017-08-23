@@ -321,7 +321,7 @@ As you can see, it just created the store for us. No more, no less.
 
 ### Calling the actions
 - If you want to request all posts, you just need to dispatch the `listPosts()` action.
-- If you want to fetch a specific post call `getPost({id})`. Don't forget to pass the necessary object and properties defined in the corresponding `path` function, e.g. if you want to call `getPost`, and want to pass an arbitrary parameter, call it like the following:  
+- If you want to fetch a specific post call `getPost()`. Don't forget to pass the necessary object and properties defined in the corresponding `path` function, e.g. if you want to call `getPost`, and want to pass an arbitrary parameter, call it like the following:  
 `getPost({params: {someParam: 5, anotherParam: "foo"}})`.`
 - If you need to pass data, just pass an object as second parameter like `updatePost({params: {id: 5}, data:{name: "changedName", creator: "changedCreator"}})`.
 
