@@ -1,21 +1,27 @@
 # vuex-rest-api
 
-Changelog to Version 1:
-- `Resource` and `createStore` are now combined in the class `Vapi`
-- `Resource.options.pathFn` renamed to `path`
-- `path` can now also be a string (if no params are needed)
-- `addAction` renamed to `add`
-- shorthand methods for get, delete, post, put, patch
-- `createStore` is removed, therefore `Vapi` has the method `getStore`
-- `baseURL` is now part of the constructor's `options` object
-- added option [createStateFn](#-createstatefn) to return the state as a function
-
 [![](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/vuejs/awesome-vue)
 [![](https://img.shields.io/badge/vuex-2.x-brightgreen.svg)](https://vuejs.org)
 [![npm](https://img.shields.io/npm/v/vuex-rest-api.svg)](https://www.npmjs.com/package/vuex-rest-api)
 [![npm](https://img.shields.io/npm/dm/vuex-rest-api.svg)](https://www.npmjs.com/package/vuex-rest-api)
 
 A Helper utility to simplify the usage of REST APIs with Vuex 2. Uses the popular HTTP client [axios](https://github.com/mzabriskie/axios) for requests. [Works](#usage-with-websanovavue-auth) with [websanova/vue-auth](https://github.com/websanova/vue-auth).
+
+## Table of Contents
+
+* [What is this good for](#what-is-this-good-for)
+* [Installation](#installation)
+* [Steps](#steps)
+* [API](#api)
+    * [constructor(options:Object):Vapi](#constructoroptionsobjectvapi)
+    * [add(options):Vapi](#addoptionsvapi)
+    * [getStore(options):Object](#getstoreoptionsobject)
+  * [Miscellaneous](#miscellaneous)
+    * [Calling the actions](#calling-the-actions)
+    * [Query params](#query-params)
+    * [Add additional state, actions and mutations to the store](#add-additional-state-actions-and-mutations-to-the-store)
+    * [Usage with websanova/vue\-auth](#usage-with-websanovavue-auth)
+    * [Changelog to Version 1](#changelog-to-version-1)
 
 ## What is this good for
 If you want to connect a REST API with Vuex you'll find that there are a few repetitive steps. You need to request the data from the api (with an action) and set the state (via a mutation). This utility (for the sake of brevity called `Vapi` in the README) helps in *creating the store* by setting up the state, mutations and actions with a easy to follow pattern.
@@ -375,3 +381,13 @@ const resource = new Resource("https://api.com", options);
 // now you can create the actions as is usual
 resource.addActions(...)
 ```
+
+### Changelog to Version 1
+- `Resource` and `createStore` are now combined in the class `Vapi`
+- `Resource.options.pathFn` renamed to `path`
+- `path` can now also be a string (if no params are needed)
+- `addAction` renamed to `add`
+- shorthand methods for get, delete, post, put, patch
+- `createStore` is removed, therefore `Vapi` has the method `getStore`
+- `baseURL` is now part of the constructor's `options` object
+- added option [createStateFn](#-createstatefn) to return the state as a function
