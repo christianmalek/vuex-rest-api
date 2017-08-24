@@ -21,6 +21,7 @@ A Helper utility to simplify the usage of REST APIs with Vuex 2. Uses the popula
   * [Query params](#query-params)
   * [Add additional state, actions and mutations to the store](#add-additional-state-actions-and-mutations-to-the-store)
   * [Usage with websanova/vue\-auth](#usage-with-websanovavue-auth)
+  * [Check error and loading state of requests](#check-error-and-loading-state-of-requests)
   * [Changelog to Version 1](#changelog-to-version-1)
 
 ## What is this good for
