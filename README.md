@@ -184,14 +184,22 @@ vrap.delete({
 })
 ```
 
-#### `# property` (required)
-- **Type**: `string`  
+#### `# property`
+- **Type**: `string`
+- **Default**: `null`
 - **Usage**: The property of the state which should be automatically changed if the resolve is successfully.
 ```js
 {
   property: "posts"
 }
 ```
+
+##### When to set `property` in spite of it's optionality
+Sometimes you have to set the state by yourself. In that case you may consider to avoid setting `property`. Please consider the following consequences:
+
+- `state.pending.<property name>` and `state.error.<property name>` won't be set. So you **can't** check these properties to see if the request is still pending or failed. Nevertheless you can still set the `onError` property to react to the error case.
+- Because the property's name is unknown *vuex-rest-api* can't set the initial state for this property. You have to set the initial state by yourself.
+- In the case of successful requests there will be nothing done with the payload. You have to set the `onSuccess` method to set the state (with the payload) by yourself.
 
 #### `# path` (required)
 - **Type**: `Function|string`  
@@ -391,3 +399,4 @@ resource.addActions(...)
 - `createStore` is removed, therefore `Vapi` has the method `getStore`
 - `baseURL` is now part of the constructor's `options` object
 - added option [createStateFn](#-createstatefn) to return the state as a function
+- `property` is now [optional](#-whentosetpropertyinspiteofitsoptionality)

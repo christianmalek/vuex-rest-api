@@ -15,7 +15,7 @@ export interface ResourceActionMap {
 
 export interface ResourceActionOptions {
   action: string
-  property: string
+  property?: string
   method: string
   path: Function | string
   onSuccess?: Function
@@ -50,10 +50,7 @@ export class Resource {
   add(options: ResourceActionOptions): Resource {
     options.method = options.method || "get"
     options.requestConfig = options.requestConfig || {}
-
-    if (!options.property) {
-      throw new Error("'property' field must be set.")
-    }
+    options.property = options.property || null
 
     if (this.HTTPMethod.indexOf(options.method) === -1) {
       const methods = this.HTTPMethod.join(", ")
