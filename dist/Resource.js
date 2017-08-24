@@ -15,9 +15,7 @@ var Resource = (function () {
         var _this = this;
         options.method = options.method || "get";
         options.requestConfig = options.requestConfig || {};
-        if (!options.property) {
-            throw new Error("'property' field must be set.");
-        }
+        options.property = options.property || null;
         if (this.HTTPMethod.indexOf(options.method) === -1) {
             var methods = this.HTTPMethod.join(", ");
             throw new Error("Illegal HTTP method set. Following methods are allowed: " + methods + ". You chose \"" + options.method + "\".");

@@ -11,7 +11,7 @@ export interface ResourceActionMap {
 }
 export interface ResourceActionOptions {
     action: string;
-    property: string;
+    property?: string;
     method: string;
     path: Function | string;
     onSuccess?: Function;

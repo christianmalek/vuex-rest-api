@@ -61,6 +61,11 @@ class StoreCreator {
     Object.keys(actions).forEach((action) => {
       const property = actions[action].property
 
+      // don't do anything if no property is set
+      if (property === null) {
+        return;
+      }
+
       // if state is undefined set default value to null
       if (state[property] === undefined) {
         state[property] = null
@@ -85,6 +90,11 @@ class StoreCreator {
       const actions = this.resource.actions
       Object.keys(actions).forEach((action) => {
         const property = actions[action].property
+
+        // don't do anything if no property is set
+        if (property === null) {
+          return;
+        }
 
         // if state is undefined set default value to null
         if (state[property] === undefined) {
@@ -111,26 +121,36 @@ class StoreCreator {
       const { property, commitString, onSuccess, onError } = actions[action]
 
       mutations[`${commitString}`] = (state) => {
-        state.pending[property] = true
-        state.error[property] = null
+
+        if (property !== null) {
+          state.pending[property] = true
+          state.error[property] = null
+        }
       }
       mutations[`${commitString}_${this.successSuffix}`] = (state, payload) => {
-        state.pending[property] = false
-        state.error[property] = null
+
+        if (property !== null) {
+          state.pending[property] = false
+          state.error[property] = null
+        }
 
         if (onSuccess) {
           onSuccess(state, payload)
-        } else {
+        } else if (property !== null) {
           state[property] = payload.data
         }
       }
       mutations[`${commitString}_${this.errorSuffix}`] = (state, payload) => {
-        state.pending[property] = false
-        state.error[property] = payload
+
+        if (property !== null) {
+          state.pending[property] = false
+          state.error[property] = payload
+        }
 
         if (onError) {
           onError(state, payload)
-        } else {
+        } else if (property !== null) {
+
           // sets property to it's default value in case of an error
           state[property] = defaultState[property]
         }
