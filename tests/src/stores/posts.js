@@ -1,4 +1,4 @@
-import Vapi from "../../../dist"
+import Vapi from "vuex-rest-api"
 
 const posts = new Vapi({
   baseURL: "https://jsonplaceholder.typicode.com",
@@ -9,6 +9,11 @@ const posts = new Vapi({
   .get({
     action: "getPosts",
     property: "posts",
+    path: "/posts"
+  })
+  .post({
+    action: "createPost",
+    property: "post",
     path: "/posts"
   })
   .getStore()

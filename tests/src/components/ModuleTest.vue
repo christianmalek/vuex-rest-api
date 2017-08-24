@@ -4,6 +4,7 @@
     <p>Posts: {{ posts.length }}</p>
     <p>Counter: {{ counter }}</p>
     <button @click="increment">increase counter</button>
+    <button @click="create">create post</button>
   </div>
 </template>
 
@@ -19,8 +20,18 @@ export default {
     counter: state => state.posts.counter
   }),
   methods: {
+    create() {
+      this.$store.dispatch("createPost", {
+        data: {
+          title: 'foo',
+          body: 'bar',
+          userId: 1
+        }
+      })
+    },
     ...mapActions([
       "getPosts",
+      "createPost",
       "increment"
     ])
   }
