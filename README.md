@@ -16,12 +16,12 @@ A Helper utility to simplify the usage of REST APIs with Vuex 2. Uses the popula
     * [constructor(options:Object):Vapi](#constructoroptionsobjectvapi)
     * [add(options):Vapi](#addoptionsvapi)
     * [getStore(options):Object](#getstoreoptionsobject)
-  * [Miscellaneous](#miscellaneous)
-    * [Calling the actions](#calling-the-actions)
-    * [Query params](#query-params)
-    * [Add additional state, actions and mutations to the store](#add-additional-state-actions-and-mutations-to-the-store)
-    * [Usage with websanova/vue\-auth](#usage-with-websanovavue-auth)
-    * [Changelog to Version 1](#changelog-to-version-1)
+* [Miscellaneous](#miscellaneous)
+  * [Calling the actions](#calling-the-actions)
+  * [Query params](#query-params)
+  * [Add additional state, actions and mutations to the store](#add-additional-state-actions-and-mutations-to-the-store)
+  * [Usage with websanova/vue\-auth](#usage-with-websanovavue-auth)
+  * [Changelog to Version 1](#changelog-to-version-1)
 
 ## What is this good for
 If you want to connect a REST API with Vuex you'll find that there are a few repetitive steps. You need to request the data from the api (with an action) and set the state (via a mutation). This utility (for the sake of brevity called `Vapi` in the README) helps in *creating the store* by setting up the state, mutations and actions with a easy to follow pattern.
@@ -86,7 +86,7 @@ const posts = new Vapi({
 const store = new Vuex.Store(posts)
 ```
 
-# API
+## API
 The following sections explain the API of the `Vapi` class.
 
 ### `constructor(options:Object):Vapi`
@@ -388,6 +388,48 @@ const resource = new Resource("https://api.com", options);
 
 // now you can create the actions as is usual
 resource.addActions(...)
+```
+
+### Check error and loading state of requests
+`vuex-rest-api` sets for every property set in the `add()` method two different states:
+
+- `state.pending.<propertyName>` (`true` when loading, otherwise `false`)
+- `state.error.<propertyName>` (`null` if there's no error, otherwise it contains the error object)
+
+This is really handy if you want to show a loading hint for specific requests or an error message:
+
+```js
+<template>
+  <div>
+    <ul>
+      <li v-for="post in posts">{{post}}</li>
+    </ul>
+    <p v-if="pending.posts">loading posts...</p>
+    <p v-if="error.posts">loading failed</p>
+  </div>
+</template>
+
+<script>
+import { mapState, mapActions } from 'vuex'
+
+export default {
+  created() {
+    this.getPosts()
+  },
+
+  // make states available
+  computed: mapState({
+    posts: state => state.posts.posts,
+    pending: state => state.posts.pending,
+    error: state => state.posts.error
+  }),
+  methods: {
+    ...mapActions([
+      "getPosts"
+    ])
+  }
+}
+</script>
 ```
 
 ### Changelog to Version 1
