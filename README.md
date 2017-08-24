@@ -441,4 +441,4 @@ export default {
 - `createStore` is removed, therefore `Vapi` has the method `getStore`
 - `baseURL` is now part of the constructor's `options` object
 - added option [createStateFn](#-createstatefn) to return the state as a function
-- `property` is now [optional](#-whentosetpropertyinspiteofitsoptionality)
+- `property` is now [optional](#when-to-set-property-in-spite-of-its-optionality)
