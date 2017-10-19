@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Store_1 = require("./Store");
 var Resource_1 = require("./Resource");
-var Vapi = (function () {
+var Vapi = /** @class */ (function () {
     function Vapi(options) {
         this.resource = new Resource_1.Resource(options);
         return this;
@@ -12,6 +12,12 @@ var Vapi = (function () {
     };
     Vapi.prototype.delete = function (options) {
         return this.add(Object.assign(options, { method: "delete" }));
+    };
+    Vapi.prototype.head = function (options) {
+        return this.add(Object.assign(options, { method: "head" }));
+    };
+    Vapi.prototype.options = function (options) {
+        return this.add(Object.assign(options, { method: "options" }));
     };
     Vapi.prototype.post = function (options) {
         return this.add(Object.assign(options, { method: "post" }));

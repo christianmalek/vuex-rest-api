@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var cloneDeep = require("lodash.clonedeep");
-var StoreCreator = (function () {
+var StoreCreator = /** @class */ (function () {
     function StoreCreator(resource, options) {
         this.successSuffix = "SUCCEEDED";
         this.errorSuffix = "FAILED";

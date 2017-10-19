@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = require("axios");
-var Resource = (function () {
+var Resource = /** @class */ (function () {
     function Resource(options) {
-        this.HTTPMethod = ["get", "delete", "head", "post", "put", "patch"];
+        this.HTTPMethod = ["get", "delete", "head", "options", "post", "put", "patch"];
         this.actions = {};
         this.baseURL = options.baseURL;
         this.actions = {};

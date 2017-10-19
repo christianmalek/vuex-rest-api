@@ -5,6 +5,8 @@ export declare class Vapi {
     constructor(options: ResourceOptions);
     get(options: ResourceActionOptions): Vapi;
     delete(options: ResourceActionOptions): Vapi;
+    head(options: ResourceActionOptions): Vapi;
+    options(options: ResourceActionOptions): Vapi;
     post(options: ResourceActionOptions): Vapi;
     put(options: ResourceActionOptions): Vapi;
     patch(options: ResourceActionOptions): Vapi;
