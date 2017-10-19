@@ -33,7 +33,7 @@ export interface ResourceOptions {
 
 export class Resource {
   private baseURL: string
-  private readonly HTTPMethod: Array<string> = ["get", "delete", "head", "post", "put", "patch"]
+  private readonly HTTPMethod: Array<string> = ["get", "delete", "head", "options", "post", "put", "patch"]
   public actions: ResourceActionMap = {}
   public state: Object
   private axios: Object

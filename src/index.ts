@@ -17,6 +17,14 @@ export class Vapi {
     return this.add(Object.assign(options, { method: "delete" }))
   }
 
+  head(options: ResourceActionOptions) {
+    return this.add(Object.assign(options, { method: "head" }))
+  }
+
+  options(options: ResourceActionOptions) {
+    return this.add(Object.assign(options, { method: "options" }))
+  }
+
   post(options: ResourceActionOptions) {
     return this.add(Object.assign(options, { method: "post" }))
   }
