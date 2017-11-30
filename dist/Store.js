@@ -155,7 +155,7 @@ var StoreCreator = /** @class */ (function () {
                 if (actionParams === void 0) { actionParams = { params: {}, data: {} }; }
                 return __awaiter(_this, void 0, void 0, function () {
                     var _this = this;
-                    return __generator(this, function (_a) {
+                    return __generator(this, function (_b) {
                         if (!actionParams.params)
                             actionParams.params = {};
                         if (!actionParams.data)
