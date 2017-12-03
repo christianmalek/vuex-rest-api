@@ -22,7 +22,7 @@ A Helper utility to simplify the usage of REST APIs with Vuex 2. Uses the popula
   * [Add additional state, actions and mutations to the store](#add-additional-state-actions-and-mutations-to-the-store)
   * [Usage with websanova/vue\-auth](#usage-with-websanovavue-auth)
   * [Check error and loading state of requests](#check-error-and-loading-state-of-requests)
-  * [Changelog to Version 1](#changelog-to-version-1)
+  * [Changelog](#changelog)
 
 ## What is this good for
 If you want to connect a REST API with Vuex you'll find that there are a few repetitive steps. You need to request the data from the api (with an action) and set the state (via a mutation). This utility (for the sake of brevity called `Vapi` in the README) helps in *creating the store* by setting up the state, mutations and actions with a easy to follow pattern.
@@ -433,13 +433,5 @@ export default {
 </script>
 ```
 
-### Changelog to Version 1
-- `Resource` and `createStore` are now combined in the class `Vapi`
-- `Resource.options.pathFn` renamed to `path`
-- `path` can now also be a string (if no params are needed)
-- `addAction` renamed to `add`
-- shorthand methods for get, delete, post, put, patch
-- `createStore` is removed, therefore `Vapi` has the method `getStore`
-- `baseURL` is now part of the constructor's `options` object
-- added option [createStateFn](#-createstatefn) to return the state as a function
-- `property` is now [optional](#when-to-set-property-in-spite-of-its-optionality)
+### Changelog
+see [CHANGELOG.md](CHANGELOG.md)
