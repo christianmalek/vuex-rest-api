@@ -1,5 +1,5 @@
 import { createStore, Store, StoreOptions } from "./Store"
-import { Resource, ResourceActionOptions, ResourceOptions } from "./Resource"
+import { Resource, ShorthandResourceActionOptions, ResourceActionOptions, ResourceOptions } from "./Resource"
 
 export class Vapi {
   private resource: Resource
@@ -9,31 +9,31 @@ export class Vapi {
     return this
   }
 
-  get(options: ResourceActionOptions) {
+  get(options: ShorthandResourceActionOptions) {
     return this.add(Object.assign(options, { method: "get" }))
   }
 
-  delete(options: ResourceActionOptions) {
+  delete(options: ShorthandResourceActionOptions) {
     return this.add(Object.assign(options, { method: "delete" }))
   }
 
-  head(options: ResourceActionOptions) {
+  head(options: ShorthandResourceActionOptions) {
     return this.add(Object.assign(options, { method: "head" }))
   }
 
-  options(options: ResourceActionOptions) {
+  options(options: ShorthandResourceActionOptions) {
     return this.add(Object.assign(options, { method: "options" }))
   }
 
-  post(options: ResourceActionOptions) {
+  post(options: ShorthandResourceActionOptions) {
     return this.add(Object.assign(options, { method: "post" }))
   }
 
-  put(options: ResourceActionOptions) {
+  put(options: ShorthandResourceActionOptions) {
     return this.add(Object.assign(options, { method: "put" }))
   }
 
-  patch(options: ResourceActionOptions) {
+  patch(options: ShorthandResourceActionOptions) {
     return this.add(Object.assign(options, { method: "patch" }))
   }
 

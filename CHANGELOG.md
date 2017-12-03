@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.4.4 (03.12.2017)
+- 🐛 added `ShorthandResourceActionOptions` interface to avoid Typescript linting error "method options is required" for shorthand action methods (https://github.com/christianmalek/vuex-rest-api/issues/39)
+- 🐛 declared baseUrl as optional in `ResourceOptions` interface
+
 ### 2.4.3 (03.12.2017)
 - added Changelog
 - updated axios dependency to version `0.17.1`

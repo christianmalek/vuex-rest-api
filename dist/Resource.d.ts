@@ -9,18 +9,20 @@ export interface ResourceAction {
 export interface ResourceActionMap {
     [action: string]: ResourceAction;
 }
-export interface ResourceActionOptions {
+export interface ShorthandResourceActionOptions {
     action: string;
     property?: string;
-    method: string;
     path: Function | string;
     onSuccess?: Function;
     onError?: Function;
     requestConfig?: Object;
     queryParams?: Boolean;
 }
+export interface ResourceActionOptions extends ShorthandResourceActionOptions {
+    method: string;
+}
 export interface ResourceOptions {
-    baseURL: string;
+    baseURL?: string;
     state?: Object;
     axios?: Object;
     queryParams?: Boolean;
