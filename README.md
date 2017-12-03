@@ -105,9 +105,9 @@ The parameter `options` consists of the following properties:
 - **Default**: `axios` (instance)  
 - **Usage**: The axios instance to use for the requests. This is pretty useful if you use a package like websanova/vue-auth which sets automatically the Authorization header. So you don't need to care. If you don't pass an instance, it will use the global axios instance.  
 
-#### `# baseURL` (required)
+#### `# baseURL`
 - **Type**: `string`
-- **Usage**: The API's base URL without a specific endpoint's path.  
+- **Usage**: The API's base URL without a specific endpoint's path. It's usage is optional. If you don't set it, it will use the baseUrl of the passed axios instance. If no axios instance is passed, every endpoint has to be passed an absolute path.
 ```js
 {
   baseURL: "https://jsonplaceholder.typicode.com"
