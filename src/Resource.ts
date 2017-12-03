@@ -60,10 +60,10 @@ export class Resource {
     let completePathFn: Function
     if (typeof options.path === "function") {
       const pathFn: Function = options.path
-      completePathFn = (params: Object) => this.baseURL + pathFn(params)
+      completePathFn = (params: Object) => this.normalizedBaseURL + pathFn(params)
     }
     else {
-      completePathFn = () => this.baseURL + options.path
+      completePathFn = () => this.normalizedBaseURL + options.path
     }
 
     this.actions[options.action] = {
@@ -99,6 +99,10 @@ export class Resource {
     }
 
     return this
+  }
+
+  private get normalizedBaseURL(): string {
+    return this.baseURL || (this.axios as any).defaults.baseURL || ""
   }
 
   private getDispatchString(action: string): string {

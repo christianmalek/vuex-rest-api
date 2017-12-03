@@ -23,10 +23,10 @@ var Resource = /** @class */ (function () {
         var completePathFn;
         if (typeof options.path === "function") {
             var pathFn_1 = options.path;
-            completePathFn = function (params) { return _this.baseURL + pathFn_1(params); };
+            completePathFn = function (params) { return _this.normalizedBaseURL + pathFn_1(params); };
         }
         else {
-            completePathFn = function () { return _this.baseURL + options.path; };
+            completePathFn = function () { return _this.normalizedBaseURL + options.path; };
         }
         this.actions[options.action] = {
             requestFn: function (params, data) {
@@ -62,6 +62,13 @@ var Resource = /** @class */ (function () {
         };
         return this;
     };
+    Object.defineProperty(Resource.prototype, "normalizedBaseURL", {
+        get: function () {
+            return this.baseURL || this.axios.defaults.baseURL || "";
+        },
+        enumerable: true,
+        configurable: true
+    });
     Resource.prototype.getDispatchString = function (action) {
         return action;
     };
