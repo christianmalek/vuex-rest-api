@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.5.0 (05.02.2018)
+- `axios` is now a peer dependency.
+
 ### 2.4.4 (03.12.2017)
 - 🐛 added `ShorthandResourceActionOptions` interface to avoid Typescript linting error "method options is required" for shorthand action methods (https://github.com/christianmalek/vuex-rest-api/issues/39)
 - 🐛 declared baseUrl as optional in `ResourceOptions` interface
