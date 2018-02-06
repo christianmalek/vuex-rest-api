@@ -1,5 +1,10 @@
 # Changelog
 
+### 2.6.0 (06.02.2018)
+- changed `ResourceOptions.axios` to type `AxiosInstance` for better typescript support
+- added property `ResourceAction.axios: AxiosInstance`
+- the `onSuccess` and `onError` fns now provide their axios instance as third parameter. The method signatures look like the following: `method(state, payload, axios)`
+
 ### 2.5.0 (05.02.2018)
 - `axios` is now a peer dependency.
 
