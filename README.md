@@ -228,7 +228,7 @@ Maybe the API endpoint needs no parameters. Then you can use a string like this:
 - **Usage**: This function will be called after successfully resolving the action. If you define this property, only the corresponding pending and error properties will be set, but not `state[property]`.
 ```js
 {
-  onSuccess: (state, payload) => {
+  onSuccess: (state, payload, axios) => {
     // if you set the onSuccess function you have to set the state manually
     state.posts = payload.data
     state.post = payload.data[0]
@@ -242,7 +242,7 @@ Maybe the API endpoint needs no parameters. Then you can use a string like this:
 - **Usage**: This function will be called if the action request fails. If you define this property, only the corresponding `pending` and `error` properties of the set `property` will be set, but not `state[property]`.
 ```js
 {
-  onError: (state, error) => {
+  onError: (state, error, axios) => {
     Toast.showError(`Oops, there was following error: ${error}`)
 
     // if you set the onError function you have to set the state manually
