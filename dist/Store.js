@@ -109,7 +109,7 @@ var StoreCreator = /** @class */ (function () {
         var mutations = {};
         var actions = this.resource.actions;
         Object.keys(actions).forEach(function (action) {
-            var _a = actions[action], property = _a.property, commitString = _a.commitString, onSuccess = _a.onSuccess, onError = _a.onError;
+            var _a = actions[action], property = _a.property, commitString = _a.commitString, onSuccess = _a.onSuccess, onError = _a.onError, axios = _a.axios;
             mutations["" + commitString] = function (state) {
                 if (property !== null) {
                     state.pending[property] = true;
@@ -122,7 +122,7 @@ var StoreCreator = /** @class */ (function () {
                     state.error[property] = null;
                 }
                 if (onSuccess) {
-                    onSuccess(state, payload);
+                    onSuccess(state, payload, axios);
                 }
                 else if (property !== null) {
                     state[property] = payload.data;
@@ -134,7 +134,7 @@ var StoreCreator = /** @class */ (function () {
                     state.error[property] = payload;
                 }
                 if (onError) {
-                    onError(state, payload);
+                    onError(state, payload, axios);
                 }
                 else if (property !== null) {
                     // sets property to it's default value in case of an error

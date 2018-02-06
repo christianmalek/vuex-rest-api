@@ -43,7 +43,7 @@ var Resource = /** @class */ (function () {
                 }
                 var requestConfig = Object.assign({}, options.requestConfig);
                 var paramsSerializer = options.requestConfig["paramsSerializer"] !== undefined ||
-                    _this.axios["defaults"]["paramsSerializer"] !== undefined;
+                    _this.axios.defaults.paramsSerializer !== undefined;
                 if (queryParams || paramsSerializer) {
                     requestConfig["params"] = params;
                 }
@@ -58,7 +58,8 @@ var Resource = /** @class */ (function () {
             onSuccess: options.onSuccess,
             onError: options.onError,
             dispatchString: this.getDispatchString(options.action),
-            commitString: this.getCommitString(options.action)
+            commitString: this.getCommitString(options.action),
+            axios: this.axios
         };
         return this;
     };

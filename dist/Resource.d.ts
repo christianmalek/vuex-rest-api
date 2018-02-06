@@ -1,3 +1,4 @@
+import { AxiosInstance } from "axios";
 export interface ResourceAction {
     requestFn: Function;
     onSuccess: Function;
@@ -5,6 +6,7 @@ export interface ResourceAction {
     property: string;
     dispatchString: string;
     commitString: string;
+    axios: AxiosInstance;
 }
 export interface ResourceActionMap {
     [action: string]: ResourceAction;
@@ -24,7 +26,7 @@ export interface ResourceActionOptions extends ShorthandResourceActionOptions {
 export interface ResourceOptions {
     baseURL?: string;
     state?: Object;
-    axios?: Object;
+    axios?: AxiosInstance;
     queryParams?: Boolean;
 }
 export declare class Resource {
@@ -32,7 +34,7 @@ export declare class Resource {
     private readonly HTTPMethod;
     actions: ResourceActionMap;
     state: Object;
-    private axios;
+    axios: AxiosInstance;
     private queryParams;
     constructor(options: ResourceOptions);
     add(options: ResourceActionOptions): Resource;

@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { AxiosInstance } from "axios"
 
 export interface ResourceAction {
   requestFn: Function,
@@ -6,7 +6,8 @@ export interface ResourceAction {
   onError: Function,
   property: string,
   dispatchString: string,
-  commitString: string
+  commitString: string,
+  axios: AxiosInstance,  
 }
 
 export interface ResourceActionMap {
@@ -30,7 +31,7 @@ export interface ResourceActionOptions extends ShorthandResourceActionOptions {
 export interface ResourceOptions {
   baseURL?: string,
   state?: Object,
-  axios?: Object,
+  axios?: AxiosInstance,
   queryParams?: Boolean
 }
 
@@ -39,7 +40,7 @@ export class Resource {
   private readonly HTTPMethod: Array<string> = ["get", "delete", "head", "options", "post", "put", "patch"]
   public actions: ResourceActionMap = {}
   public state: Object
-  private axios: Object
+  public axios: AxiosInstance
   private queryParams: Boolean
 
   constructor(options: ResourceOptions) {
@@ -83,7 +84,7 @@ export class Resource {
 
         const requestConfig = Object.assign({}, options.requestConfig)
         const paramsSerializer = options.requestConfig["paramsSerializer"] !== undefined ||
-          this.axios["defaults"]["paramsSerializer"] !== undefined
+          this.axios.defaults.paramsSerializer !== undefined
         if (queryParams || paramsSerializer) {
           requestConfig["params"] = params
         }
@@ -98,14 +99,15 @@ export class Resource {
       onSuccess: options.onSuccess,
       onError: options.onError,
       dispatchString: this.getDispatchString(options.action),
-      commitString: this.getCommitString(options.action)
+      commitString: this.getCommitString(options.action),
+      axios: this.axios      
     }
 
     return this
   }
 
   private get normalizedBaseURL(): string {
-    return this.baseURL || (this.axios as any).defaults.baseURL || ""
+    return this.baseURL || this.axios.defaults.baseURL || ""
   }
 
   private getDispatchString(action: string): string {

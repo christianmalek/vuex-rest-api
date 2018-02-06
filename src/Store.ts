@@ -118,7 +118,7 @@ class StoreCreator {
 
     const actions = this.resource.actions
     Object.keys(actions).forEach((action) => {
-      const { property, commitString, onSuccess, onError } = actions[action]
+      const { property, commitString, onSuccess, onError, axios } = actions[action]
 
       mutations[`${commitString}`] = (state) => {
 
@@ -135,7 +135,7 @@ class StoreCreator {
         }
 
         if (onSuccess) {
-          onSuccess(state, payload)
+          onSuccess(state, payload, axios)
         } else if (property !== null) {
           state[property] = payload.data
         }
@@ -148,7 +148,7 @@ class StoreCreator {
         }
 
         if (onError) {
-          onError(state, payload)
+          onError(state, payload, axios)
         } else if (property !== null) {
 
           // sets property to it's default value in case of an error
