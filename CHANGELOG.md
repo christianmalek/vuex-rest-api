@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.6.1 (12.02.2018)
+- 🐛 removed axios from package.json dependencies (is peer dependency since 2.5.0)
+
 ### 2.6.0 (06.02.2018)
 - changed `ResourceOptions.axios` to type `AxiosInstance` for better typescript support
 - added property `ResourceAction.axios: AxiosInstance`
