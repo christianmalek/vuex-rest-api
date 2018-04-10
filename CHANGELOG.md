@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.6.2 (10.04.2018)
+- updated axios peer dependency to version 0.18.x
+
 ### 2.6.1 (12.02.2018)
 - 🐛 removed axios from package.json dependencies (is peer dependency since 2.5.0)
 
