@@ -107,7 +107,9 @@ The parameter `options` consists of the following properties:
 
 #### `# baseURL`
 - **Type**: `string`
-- **Usage**: The API's base URL without a specific endpoint's path. It's usage is optional. If you don't set it, it will use the baseUrl of the passed axios instance. If no axios instance is passed, every endpoint has to be passed an absolute path.
+- **Usage**: The API's base URL without a specific endpoint's path. It's usage is optional. If you don't set it, it will use the base URL of the axios instance. Please note that `baseURL` has a higher priority than the baseURL set in the passed axios instance. You can also set base URL in the request config when you add an action. The priority is as following:
+
+  `baseURL > axios instance base URL > request config base URL`
 ```js
 {
   baseURL: "https://jsonplaceholder.typicode.com"

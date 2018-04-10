@@ -1,4 +1,9 @@
-# Changelog
+# Changelog 
+
+(format is `dd.mm.yyyy`)
+
+### 2.7.0 (10.04.2018)
+- 🐛 if `axios.defaults.baseURL` was set and it was no absolute URL it was appended twice (see https://github.com/christianmalek/vuex-rest-api/issues/60). See *baseURL from the constructor's options parameter in the README* for more info.
 
 ### 2.6.2 (10.04.2018)
 - updated axios peer dependency to version 0.18.x

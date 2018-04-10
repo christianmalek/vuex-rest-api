@@ -7,7 +7,7 @@ export interface ResourceAction {
   property: string,
   dispatchString: string,
   commitString: string,
-  axios: AxiosInstance,  
+  axios: AxiosInstance,
 }
 
 export interface ResourceActionMap {
@@ -61,13 +61,12 @@ export class Resource {
       throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}. You chose "${options.method}".`)
     }
 
-    let completePathFn: Function
+    let urlFn: Function
     if (typeof options.path === "function") {
       const pathFn: Function = options.path
-      completePathFn = (params: Object) => this.normalizedBaseURL + pathFn(params)
-    }
-    else {
-      completePathFn = () => this.normalizedBaseURL + options.path
+      urlFn = (params: Object) => pathFn(params)
+    } else {
+      urlFn = () => options.path
     }
 
     this.actions[options.action] = {
@@ -89,10 +88,16 @@ export class Resource {
           requestConfig["params"] = params
         }
 
+        // This is assignment is made to respect the priority of the base URL
+        // It is as following: baseURL > axios instance base URL > request config base URL
+        const requestConfigWithProperBaseURL = Object.assign({
+          baseURL: this.normalizedBaseURL
+        }, requestConfig)
+
         if (["post", "put", "patch"].indexOf(options.method) > -1) {
-          return this.axios[options.method](completePathFn(params), data, requestConfig)
+          return this.axios[options.method](urlFn(params), data, requestConfigWithProperBaseURL)
         } else {
-          return this.axios[options.method](completePathFn(params), requestConfig)
+          return this.axios[options.method](urlFn(params), requestConfigWithProperBaseURL)
         }
       },
       property: options.property,
@@ -100,7 +105,7 @@ export class Resource {
       onError: options.onError,
       dispatchString: this.getDispatchString(options.action),
       commitString: this.getCommitString(options.action),
-      axios: this.axios      
+      axios: this.axios
     }
 
     return this

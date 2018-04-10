@@ -20,13 +20,13 @@ var Resource = /** @class */ (function () {
             var methods = this.HTTPMethod.join(", ");
             throw new Error("Illegal HTTP method set. Following methods are allowed: " + methods + ". You chose \"" + options.method + "\".");
         }
-        var completePathFn;
+        var urlFn;
         if (typeof options.path === "function") {
             var pathFn_1 = options.path;
-            completePathFn = function (params) { return _this.normalizedBaseURL + pathFn_1(params); };
+            urlFn = function (params) { return pathFn_1(params); };
         }
         else {
-            completePathFn = function () { return _this.normalizedBaseURL + options.path; };
+            urlFn = function () { return options.path; };
         }
         this.actions[options.action] = {
             requestFn: function (params, data) {
@@ -47,11 +47,16 @@ var Resource = /** @class */ (function () {
                 if (queryParams || paramsSerializer) {
                     requestConfig["params"] = params;
                 }
+                // This is assignment is made to respect the priority of the base URL
+                // It is as following: baseURL > axios instance base URL > request config base URL
+                var requestConfigWithProperBaseURL = Object.assign({
+                    baseURL: _this.normalizedBaseURL
+                }, requestConfig);
                 if (["post", "put", "patch"].indexOf(options.method) > -1) {
-                    return _this.axios[options.method](completePathFn(params), data, requestConfig);
+                    return _this.axios[options.method](urlFn(params), data, requestConfigWithProperBaseURL);
                 }
                 else {
-                    return _this.axios[options.method](completePathFn(params), requestConfig);
+                    return _this.axios[options.method](urlFn(params), requestConfigWithProperBaseURL);
                 }
             },
             property: options.property,
