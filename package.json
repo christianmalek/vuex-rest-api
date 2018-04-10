@@ -12,7 +12,7 @@
     "lodash.clonedeep": "4.5.x"
   },
   "peerDependencies": {
-    "axios": "0.17.x"
+    "axios": "0.18.x"
   },
   "scripts": {
     "build": "tsc -p ."
