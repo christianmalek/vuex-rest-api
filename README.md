@@ -43,7 +43,7 @@ npm install vuex-rest-api
    At least you have to set the base URL of the API you're requesting from. You can also define the default state. If you don't define a default state from a property it will default to `null`.
    In the example
 1. Create the actions.  
-   Each action represents a Vuex action. If it will be called (property `name`), it requests a specific API endpoint (property `path`) and sets the related property named `property` to the response's payload.
+   Each action represents a Vuex action. If it will be called (property `action`), it requests a specific API endpoint (property `path`) and sets the related property named `property` to the response's payload.
 1. Create the store object
 1. Pass it to Vuex.
 
@@ -376,22 +376,7 @@ posts.actions.increment = context => {
 
 ### Usage with websanova/vue-auth
 
-If you want to use this little helper with vue-auth you need to use vue-axios. Just follow the steps of both readme's. Then just pass the instance axios to the Resource object:
-
-```js
-import Vue from "vue";
-
-const options = {
-  //this works only if you registered axios with vue-axios before
-  axios: Vue.axios
-}
-
-// pass options to the resource constructor
-const resource = new Resource("https://api.com", options);
-
-// now you can create the actions as is usual
-resource.addActions(...)
-```
+If you want to use this little helper with vue-auth you don't have to do anything. It will just work due to the fact that vue-auth uses the global axios instance. Don't pass any axios instance to Vapi and it will work.
 
 ### Check error and loading state of requests
 `vuex-rest-api` sets for every property set in the `add()` method two different states:
