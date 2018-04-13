@@ -46,8 +46,11 @@ npm install vuex-rest-api
    Each action represents a Vuex action. If it will be called (property `action`), it requests a specific API endpoint (property `path`) and sets the related property named `property` to the response's payload.
 1. Create the store object
 1. Pass it to Vuex.
+1. Continue reading [here](#calling-the-actions) to know how to *call the actions*.
 
 ```js
+// store.js
+
 import Vuex from "vuex"
 import Vue from "vue"
 // Step 1
@@ -68,13 +71,11 @@ const posts = new Vapi({
     property: "post",
     path: ({ id }) => `/posts/${id}`
   })
-  // Step 3b
   .get({
     action: "listPosts",
     property: "posts",
     path: "/posts"
   })
-  // Step 3c
   .post({
     action: "updatePost",
     property: "post",
@@ -86,6 +87,8 @@ const posts = new Vapi({
 // Step 5
 const store = new Vuex.Store(posts)
 ```
+
+
 
 ## API
 The following sections explain the API of the `Vapi` class.
@@ -337,16 +340,53 @@ As you can see, it just created the store for us. No more, no less.
 ## Miscellaneous
 
 ### Calling the actions
-- If you want to request all posts, you just need to dispatch the `listPosts()` action.
-- If you want to fetch a specific post call `getPost()`. Don't forget to pass the necessary object and properties defined in the corresponding `path` function, e.g. if you want to call `getPost`, and want to pass an arbitrary parameter, call it like the following:  
-`getPost({params: {someParam: 5, anotherParam: "foo"}})`.`
-- If you need to pass data, just pass an object as second parameter like `updatePost({params: {id: 5}, data:{name: "changedName", creator: "changedCreator"}})`.
 
-The function signature looks like this:
+Please respect the following function signature if you want to call an action:
 ```js
-actionName({params: {}, data: {}})`
+// direct via store
+this.$store.dispatch("actionName", { params: {}, data: {} })
+
+// or with mapActions
+this.actionName({ params: {}, data: {} })`
 ```
-Please note that you do **not** have to set params, data or the object containing them if you don't need them.
+
+`params` (optional) represents the data you passed to the `path` property.
+`data` (optional) is your request's payload.
+
+Please note that you **do not** have to set params, data or the enclosing object if you don't need them.
+
+Examples:
+- If you want to request all posts with the action `listPosts` and don't have any data or params, you could call it like this:
+
+```js
+// direct via store
+`this.$store.dispatch("listPosts")`
+
+// or with mapActions
+`this.listPosts()`
+```
+
+
+- If you want to fetch a specific post with an parameter named *id* call one of the following:
+```js
+// direct via store
+const params = { id: 42 }
+this.$store.dispatch("getPost", { params })
+
+// or with mapActions
+this.getPost({ params })
+```
+  
+- If you have an action where you have data and params to set, just do it like this:
+```js
+// direct via store
+const params = { id: 42 }
+const data = { content: "foobar" }
+this.$store.dispatch("actionName", { params, data })
+
+// or with mapActions
+this.actionName({ params, data })
+```
 
 ### Query params
 If you want to use query params just set the `queryParams` property either in the constructor or the options from the add method. If you need it for just one action set it in the corresponding method. On the other hand, if you need it for all actions, set it in the constructor.
