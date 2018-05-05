@@ -447,8 +447,8 @@ export default {
   // make states available
   computed: mapState({
     posts: state => state.posts.posts,
-    pending: state => state.posts.pending,
-    error: state => state.posts.error
+    pending: state => state.pending,
+    error: state => state.error
   }),
   methods: {
     ...mapActions([
