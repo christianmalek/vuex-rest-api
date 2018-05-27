@@ -84,7 +84,7 @@ const posts = new Vapi({
   .getStore()
 
 // Step 5
-const store = new Vuex.Store(posts)
+export const store = new Vuex.Store(posts)
 ```
 
 
