@@ -359,10 +359,10 @@ Examples:
 
 ```js
 // direct via store
-`this.$store.dispatch("listPosts")`
+this.$store.dispatch("listPosts")
 
 // or with mapActions
-`this.listPosts()`
+this.listPosts()
 ```
 
 
