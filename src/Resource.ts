@@ -22,6 +22,7 @@ export interface ShorthandResourceActionOptions {
   onError?: Function
   requestConfig?: Object
   queryParams?: Boolean
+  headers?: Function | Object
 }
 
 export interface ResourceActionOptions extends ShorthandResourceActionOptions {
@@ -55,7 +56,16 @@ export class Resource {
     options.method = options.method || "get"
     options.requestConfig = options.requestConfig || {}
     options.property = options.property || null
-
+    let headersFn: Function
+    if (options.headers) {
+      if (typeof options.headers === "function") {
+        const headersFunction : Function = options.headers
+        headersFn = (params: Object) => headersFunction(params)
+      } else {
+        headersFn = () => options.headers
+      }
+    }
+    
     if (this.HTTPMethod.indexOf(options.method) === -1) {
       const methods = this.HTTPMethod.join(", ")
       throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}. You chose "${options.method}".`)
@@ -86,6 +96,14 @@ export class Resource {
           this.axios.defaults.paramsSerializer !== undefined
         if (queryParams || paramsSerializer) {
           requestConfig["params"] = params
+        }
+
+        if (headersFn) {
+          if (requestConfig["headers"]) {
+            Object.assign(requestConfig["headers"], headersFn(params))
+          } else {
+            requestConfig["headers"] = headersFn(params)
+          }
         }
 
         // This is assignment is made to respect the priority of the base URL
