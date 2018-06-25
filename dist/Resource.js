@@ -16,6 +16,16 @@ var Resource = /** @class */ (function () {
         options.method = options.method || "get";
         options.requestConfig = options.requestConfig || {};
         options.property = options.property || null;
+        var headersFn;
+        if (options.headers) {
+            if (typeof options.headers === "function") {
+                var headersFunction_1 = options.headers;
+                headersFn = function (params) { return headersFunction_1(params); };
+            }
+            else {
+                headersFn = function () { return options.headers; };
+            }
+        }
         if (this.HTTPMethod.indexOf(options.method) === -1) {
             var methods = this.HTTPMethod.join(", ");
             throw new Error("Illegal HTTP method set. Following methods are allowed: " + methods + ". You chose \"" + options.method + "\".");
@@ -46,6 +56,14 @@ var Resource = /** @class */ (function () {
                     _this.axios.defaults.paramsSerializer !== undefined;
                 if (queryParams || paramsSerializer) {
                     requestConfig["params"] = params;
+                }
+                if (headersFn) {
+                    if (requestConfig["headers"]) {
+                        Object.assign(requestConfig["headers"], headersFn(params));
+                    }
+                    else {
+                        requestConfig["headers"] = headersFn(params);
+                    }
                 }
                 // This is assignment is made to respect the priority of the base URL
                 // It is as following: baseURL > axios instance base URL > request config base URL

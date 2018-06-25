@@ -19,6 +19,7 @@ export interface ShorthandResourceActionOptions {
     onError?: Function;
     requestConfig?: Object;
     queryParams?: Boolean;
+    headers?: Function | Object;
 }
 export interface ResourceActionOptions extends ShorthandResourceActionOptions {
     method: string;
