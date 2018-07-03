@@ -1,6 +1,6 @@
 import Resource from "./Resource";
 export interface Store {
-    state: Object;
+    state: Object | Function;
     mutations: MutationMap;
     actions: ActionMap;
 }

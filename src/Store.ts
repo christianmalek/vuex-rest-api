@@ -2,7 +2,7 @@ import Resource, { ResourceActionMap } from "./Resource"
 import * as cloneDeep from "lodash.clonedeep"
 
 export interface Store {
-  state: Object
+  state: Object | Function
   mutations: MutationMap
   actions: ActionMap
 }
