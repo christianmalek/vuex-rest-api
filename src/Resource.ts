@@ -22,6 +22,7 @@ export interface ShorthandResourceActionOptions {
   onError?: Function
   requestConfig?: Object
   queryParams?: Boolean
+  headers?: Function | Object
 }
 
 export interface ResourceActionOptions extends ShorthandResourceActionOptions {
@@ -55,7 +56,8 @@ export class Resource {
     options.method = options.method || "get"
     options.requestConfig = options.requestConfig || {}
     options.property = options.property || null
-
+    let headersFn = this.getHeadersFn(options);
+    
     if (this.HTTPMethod.indexOf(options.method) === -1) {
       const methods = this.HTTPMethod.join(", ")
       throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}. You chose "${options.method}".`)
@@ -88,6 +90,14 @@ export class Resource {
           requestConfig["params"] = params
         }
 
+        if (headersFn) {
+          if (requestConfig["headers"]) {
+            Object.assign(requestConfig["headers"], headersFn(params))
+          } else {
+            requestConfig["headers"] = headersFn(params)
+          }
+        }
+
         // This is assignment is made to respect the priority of the base URL
         // It is as following: baseURL > axios instance base URL > request config base URL
         const requestConfigWithProperBaseURL = Object.assign({
@@ -109,6 +119,20 @@ export class Resource {
     }
 
     return this
+  }
+
+  private getHeadersFn(options: ResourceActionOptions) {
+    if (options.headers) {
+      if (typeof options.headers === "function") {
+        const headersFunction: Function = options.headers
+        return (params: Object) => headersFunction(params)
+      }
+      else {
+        return () => options.headers
+      }
+    }
+
+    return null
   }
 
   private get normalizedBaseURL(): string {
