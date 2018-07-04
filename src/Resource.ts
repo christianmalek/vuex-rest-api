@@ -56,15 +56,7 @@ export class Resource {
     options.method = options.method || "get"
     options.requestConfig = options.requestConfig || {}
     options.property = options.property || null
-    let headersFn: Function
-    if (options.headers) {
-      if (typeof options.headers === "function") {
-        const headersFunction : Function = options.headers
-        headersFn = (params: Object) => headersFunction(params)
-      } else {
-        headersFn = () => options.headers
-      }
-    }
+    let headersFn = this.getHeadersFn(options);
     
     if (this.HTTPMethod.indexOf(options.method) === -1) {
       const methods = this.HTTPMethod.join(", ")
@@ -127,6 +119,20 @@ export class Resource {
     }
 
     return this
+  }
+
+  private getHeadersFn(options: ResourceActionOptions) {
+    if (options.headers) {
+      if (typeof options.headers === "function") {
+        const headersFunction: Function = options.headers
+        return (params: Object) => headersFunction(params)
+      }
+      else {
+        return () => options.headers
+      }
+    }
+
+    return null
   }
 
   private get normalizedBaseURL(): string {
