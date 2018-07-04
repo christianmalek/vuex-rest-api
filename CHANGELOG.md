@@ -2,6 +2,9 @@
 
 (format is `dd.mm.yyyy`)
 
+### 2.8.0 (04.07.2018)
+- adding support for providing dynamic headers to requests (contributed by @rmaclean-ee, see https://github.com/christianmalek/vuex-rest-api/pull/66)
+
 ### 2.7.1 (03.07.2018)
 - 🐛 fixed broken typescript definition for the `Store` interface. `Store.state` is now properly declared as `Object | Function` (see https://github.com/christianmalek/vuex-rest-api/issues/67).
 

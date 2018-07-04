@@ -226,6 +226,44 @@ Maybe the API endpoint needs no parameters. Then you can use a string like this:
 }
 ```
 
+#### `# headers`
+- **Type**: `Function|Object`  
+- **Usage**: This property allows to provide dynamic headers for every request. It can either be a function or an object.
+
+##### Usage with a function
+Here we pass a custom headers function. This allows us to change the extra headers for each request. The data has to be passed over the `params` bag.
+
+> Please note that headers provided via this property will override it's counterpart you maybe set via `requestConfig.headers`.
+
+```js
+// setting the header
+{
+  headers: ({foo, bar}) => ({
+      "FOO": foo,
+      "BAR": bar
+    })
+}
+
+// calling the mapped action and passing the data over the params object
+this.getPosts({
+  params: { 
+    foo: "foo-header",
+    bar: "bar-header"
+  } 
+})
+```
+
+##### Usage with a string
+If the headers don't have to be evaluted on every request, just pass them via an object. Alternatively you could also set the headers via the `requestConfig.headers` property.
+```js
+{
+  headers: {
+    "FOO": "foo-header",
+    "BAR": "bar-header"
+  }
+}
+```
+
 #### `# onSuccess`
 - **Type**: `Function`  
 - **Default**: `undefined`  

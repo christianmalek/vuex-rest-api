@@ -16,16 +16,7 @@ var Resource = /** @class */ (function () {
         options.method = options.method || "get";
         options.requestConfig = options.requestConfig || {};
         options.property = options.property || null;
-        var headersFn;
-        if (options.headers) {
-            if (typeof options.headers === "function") {
-                var headersFunction_1 = options.headers;
-                headersFn = function (params) { return headersFunction_1(params); };
-            }
-            else {
-                headersFn = function () { return options.headers; };
-            }
-        }
+        var headersFn = this.getHeadersFn(options);
         if (this.HTTPMethod.indexOf(options.method) === -1) {
             var methods = this.HTTPMethod.join(", ");
             throw new Error("Illegal HTTP method set. Following methods are allowed: " + methods + ". You chose \"" + options.method + "\".");
@@ -85,6 +76,18 @@ var Resource = /** @class */ (function () {
             axios: this.axios
         };
         return this;
+    };
+    Resource.prototype.getHeadersFn = function (options) {
+        if (options.headers) {
+            if (typeof options.headers === "function") {
+                var headersFunction_1 = options.headers;
+                return function (params) { return headersFunction_1(params); };
+            }
+            else {
+                return function () { return options.headers; };
+            }
+        }
+        return null;
     };
     Object.defineProperty(Resource.prototype, "normalizedBaseURL", {
         get: function () {

@@ -56,8 +56,8 @@ export class Resource {
     options.method = options.method || "get"
     options.requestConfig = options.requestConfig || {}
     options.property = options.property || null
-    let headersFn = this.getHeadersFn(options);
-    
+    const headersFn = this.getHeadersFn(options);
+
     if (this.HTTPMethod.indexOf(options.method) === -1) {
       const methods = this.HTTPMethod.join(", ")
       throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}. You chose "${options.method}".`)

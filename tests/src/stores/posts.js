@@ -7,6 +7,18 @@ const posts = new Vapi({
   }
 })
   .get({
+    action: "getPostsWithHeaderFn",
+    property: "posts",
+    path: "/posts",
+    headers: ({ foo }) => ({ "foo": foo })
+  })
+  .get({
+    action: "getPostsWithHeaderObject",
+    property: "posts",
+    path: "/posts",
+    headers: { foo: 123 }
+  })
+  .get({
     action: "getPosts",
     property: "posts",
     path: "/posts"

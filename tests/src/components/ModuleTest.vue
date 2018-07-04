@@ -13,7 +13,8 @@ import { mapState, mapActions } from 'vuex'
 
 export default {
   created() {
-    this.getPosts()
+    // this.getPosts()
+    this.getPostsWithHeaderFn({ params: { foo: 123 } })
   },
   computed: mapState({
     posts: state => state.posts.posts,
@@ -31,6 +32,8 @@ export default {
     },
     ...mapActions([
       "getPosts",
+      "getPostsWithHeaderObject",
+      "getPostsWithHeaderFn",
       "createPost",
       "increment"
     ])
