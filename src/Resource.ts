@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from "axios"
 
 export interface ResourceAction {
   requestFn: Function,
+  beforeRequest: Function,
   onSuccess: Function,
   onError: Function,
   property: string,
@@ -18,6 +19,7 @@ export interface ShorthandResourceActionOptions {
   action: string
   property?: string
   path: Function | string
+  beforeRequest?: Function
   onSuccess?: Function
   onError?: Function
   requestConfig?: Object
@@ -111,6 +113,7 @@ export class Resource {
         }
       },
       property: options.property,
+      beforeRequest: options.beforeRequest,
       onSuccess: options.onSuccess,
       onError: options.onError,
       dispatchString: this.getDispatchString(options.action),
