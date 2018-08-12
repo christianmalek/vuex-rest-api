@@ -267,7 +267,7 @@ If the headers don't have to be evaluted on every request, just pass them via an
 #### `# beforeRequest`
 - **Type**: `Function`  
 - **Default**: `undefined`  
-- **Usage**: This function will be called before resolving the action, so you can update state optimistically.
+- **Usage**: This function will be called before resolving the action, so you can update the state optimistically. If you need to handle the rejected/resolved response just use the `onSuccess` and `onError` functions.
 ```js
 {
   beforeRequest: (state, { params, data }) => {
