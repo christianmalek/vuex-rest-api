@@ -13,6 +13,15 @@ const posts = new Vapi({
     headers: ({ foo }) => ({ "foo": foo })
   })
   .get({
+    action: "getOptimisticPosts",
+    beforeRequest: (state, params) => {
+      state.posts = [1, 2, 3, 4, 5]
+      console.log(params)
+    },
+    property: "posts",
+    path: "/posts"
+  })
+  .get({
     action: "getPostsWithHeaderObject",
     property: "posts",
     path: "/posts",
