@@ -120,8 +120,6 @@ class StoreCreator {
     Object.keys(actions).forEach((action) => {
       const { property, commitString, beforeRequest, onSuccess, onError, axios } = actions[action]
 
-      let originalState = null
-
       mutations[`${commitString}`] = (state, params) => {
 
         if (property !== null) {
@@ -130,7 +128,6 @@ class StoreCreator {
         }
 
         if (beforeRequest) {
-          originalState = state
           beforeRequest(state, params)
         }
       }
@@ -155,7 +152,7 @@ class StoreCreator {
         }
 
         if (onError) {
-          onError(state, payload, axios, originalState)
+          onError(state, payload, axios)
         } else if (property !== null) {
 
           // sets property to it's default value in case of an error
