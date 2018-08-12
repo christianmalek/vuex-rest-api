@@ -118,13 +118,17 @@ class StoreCreator {
 
     const actions = this.resource.actions
     Object.keys(actions).forEach((action) => {
-      const { property, commitString, onSuccess, onError, axios } = actions[action]
+      const { property, commitString, beforeRequest, onSuccess, onError, axios } = actions[action]
 
-      mutations[`${commitString}`] = (state) => {
+      mutations[`${commitString}`] = (state, params) => {
 
         if (property !== null) {
           state.pending[property] = true
           state.error[property] = null
+        }
+
+        if (beforeRequest) {
+          beforeRequest(state, params)
         }
       }
       mutations[`${commitString}_${this.successSuffix}`] = (state, payload) => {
@@ -173,7 +177,7 @@ class StoreCreator {
         if (!actionParams.data)
           actionParams.data = {}
 
-        commit(commitString)
+        commit(commitString, actionParams)
         return requestFn(actionParams.params, actionParams.data)
           .then((response) => {
             commit(`${commitString}_${this.successSuffix}`, response)

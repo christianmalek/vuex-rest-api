@@ -264,9 +264,21 @@ If the headers don't have to be evaluted on every request, just pass them via an
 }
 ```
 
-#### `# onSuccess`
+#### `# beforeRequest`
 - **Type**: `Function`  
 - **Default**: `undefined`  
+- **Usage**: This function will be called before resolving the action, so you can update the state optimistically. If you need to handle the rejected/resolved response just use the `onSuccess` and `onError` functions.
+```js
+{
+  beforeRequest: (state, { params, data }) => {
+    state.posts = state.posts.filter(post => post.id !== params.id)
+  }
+}
+```
+
+#### `# onSuccess`
+- **Type**: `Function`
+- **Default**: `undefined`
 - **Usage**: This function will be called after successfully resolving the action. If you define this property, only the corresponding pending and error properties will be set, but not `state[property]`.
 ```js
 {

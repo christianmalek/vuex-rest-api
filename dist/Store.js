@@ -109,11 +109,14 @@ var StoreCreator = /** @class */ (function () {
         var mutations = {};
         var actions = this.resource.actions;
         Object.keys(actions).forEach(function (action) {
-            var _a = actions[action], property = _a.property, commitString = _a.commitString, onSuccess = _a.onSuccess, onError = _a.onError, axios = _a.axios;
-            mutations["" + commitString] = function (state) {
+            var _a = actions[action], property = _a.property, commitString = _a.commitString, beforeRequest = _a.beforeRequest, onSuccess = _a.onSuccess, onError = _a.onError, axios = _a.axios;
+            mutations["" + commitString] = function (state, params) {
                 if (property !== null) {
                     state.pending[property] = true;
                     state.error[property] = null;
+                }
+                if (beforeRequest) {
+                    beforeRequest(state, params);
                 }
             };
             mutations[commitString + "_" + _this.successSuffix] = function (state, payload) {
@@ -160,7 +163,7 @@ var StoreCreator = /** @class */ (function () {
                             actionParams.params = {};
                         if (!actionParams.data)
                             actionParams.data = {};
-                        commit(commitString);
+                        commit(commitString, actionParams);
                         return [2 /*return*/, requestFn(actionParams.params, actionParams.data)
                                 .then(function (response) {
                                 commit(commitString + "_" + _this.successSuffix, response);

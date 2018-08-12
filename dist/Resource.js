@@ -69,6 +69,7 @@ var Resource = /** @class */ (function () {
                 }
             },
             property: options.property,
+            beforeRequest: options.beforeRequest,
             onSuccess: options.onSuccess,
             onError: options.onError,
             dispatchString: this.getDispatchString(options.action),

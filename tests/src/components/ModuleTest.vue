@@ -5,6 +5,7 @@
     <p>Counter: {{ counter }}</p>
     <button @click="increment">increase counter</button>
     <button @click="create">create post</button>
+    <button @click="getOptimisticPosts()">optimistic post</button>
   </div>
 </template>
 
@@ -34,6 +35,7 @@ export default {
       "getPosts",
       "getPostsWithHeaderObject",
       "getPostsWithHeaderFn",
+      "getOptimisticPosts",
       "createPost",
       "increment"
     ])

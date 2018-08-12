@@ -2,6 +2,9 @@
 
 (format is `dd.mm.yyyy`)
 
+### 2.9.0 (12.08.2018)
+- added `beforeRequest` function to enable optimistic updates (contributed by @BorisTB, see https://github.com/christianmalek/vuex-rest-api/pull/71)
+
 ### 2.8.0 (04.07.2018)
 - adding support for providing dynamic headers to requests (contributed by @rmaclean-ee, see https://github.com/christianmalek/vuex-rest-api/pull/66)
 
