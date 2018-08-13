@@ -13,6 +13,6 @@ module.exports = {
       "/changelog"
     ],
     lastUpdated: "Last Updated",
-    base: "/vuex-rest-api"
+    base: "/vuex-rest-api/"
   }
 }
