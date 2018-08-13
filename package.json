@@ -1,21 +1,31 @@
 {
   "name": "vuex-rest-api",
-  "version": "1.0.2",
+  "version": "2.9.0",
   "description": "A helper utility to simplify the usage of REST APIs with Vuex. Based on axios.",
   "author": "Christian Malek",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianmalek/vuex-rest-api"
+  },
   "dependencies": {
-    "axios": "^0.15.3"
+    "lodash.clonedeep": "4.5.x"
+  },
+  "peerDependencies": {
+    "axios": "0.18.x"
   },
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "devDependencies": {
-    "typescript": "^2.2.1"
+    "typescript": "2.7.x"
   },
   "files": [
     "dist",
     "README.md"
   ],
-  "main": "dist/index.js"
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts"
 }

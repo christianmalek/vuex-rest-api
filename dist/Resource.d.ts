@@ -1,38 +1,49 @@
+import { AxiosInstance } from "axios";
 export interface ResourceAction {
     requestFn: Function;
-    mutationSuccessFn: Function;
-    mutationFailureFn: Function;
+    beforeRequest: Function;
+    onSuccess: Function;
+    onError: Function;
     property: string;
     dispatchString: string;
     commitString: string;
+    axios: AxiosInstance;
 }
 export interface ResourceActionMap {
     [action: string]: ResourceAction;
 }
-export interface ResourceActionOptions {
+export interface ShorthandResourceActionOptions {
     action: string;
-    property: string;
-    method: string;
-    pathFn: Function;
-    mutationSuccessFn?: Function;
-    mutationFailureFn?: Function;
+    property?: string;
+    path: Function | string;
+    beforeRequest?: Function;
+    onSuccess?: Function;
+    onError?: Function;
     requestConfig?: Object;
     queryParams?: Boolean;
+    headers?: Function | Object;
+}
+export interface ResourceActionOptions extends ShorthandResourceActionOptions {
+    method: string;
 }
 export interface ResourceOptions {
+    baseURL?: string;
     state?: Object;
-    axios?: Object;
+    axios?: AxiosInstance;
     queryParams?: Boolean;
 }
-export default class Resource {
+export declare class Resource {
     private baseURL;
     private readonly HTTPMethod;
     actions: ResourceActionMap;
     state: Object;
-    private axios;
+    axios: AxiosInstance;
     private queryParams;
-    constructor(baseURL: string, options?: ResourceOptions);
-    addAction(options: ResourceActionOptions): Resource;
+    constructor(options: ResourceOptions);
+    add(options: ResourceActionOptions): Resource;
+    private getHeadersFn(options);
+    private readonly normalizedBaseURL;
     private getDispatchString(action);
     private getCommitString(action);
 }
+export default Resource;

@@ -1,107 +1,155 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios"
 
 export interface ResourceAction {
   requestFn: Function,
-  mutationSuccessFn: Function,
-  mutationFailureFn: Function,
+  beforeRequest: Function,
+  onSuccess: Function,
+  onError: Function,
   property: string,
   dispatchString: string,
-  commitString: string
+  commitString: string,
+  axios: AxiosInstance,
 }
 
 export interface ResourceActionMap {
-  [action: string]: ResourceAction;
+  [action: string]: ResourceAction
 }
 
-export interface ResourceActionOptions {
-  action: string;
-  property: string;
-  method: string;
-  pathFn: Function;
-  mutationSuccessFn?: Function;
-  mutationFailureFn?: Function;
-  requestConfig?: Object;
-  queryParams?: Boolean;
+export interface ShorthandResourceActionOptions {
+  action: string
+  property?: string
+  path: Function | string
+  beforeRequest?: Function
+  onSuccess?: Function
+  onError?: Function
+  requestConfig?: Object
+  queryParams?: Boolean
+  headers?: Function | Object
+}
+
+export interface ResourceActionOptions extends ShorthandResourceActionOptions {
+  method: string
 }
 
 export interface ResourceOptions {
+  baseURL?: string,
   state?: Object,
-  axios?: Object,
-  queryParams?: Boolean;
+  axios?: AxiosInstance,
+  queryParams?: Boolean
 }
 
-export default class Resource {
-  private baseURL: string;
-  private readonly HTTPMethod: Array<string> = ["get", "delete", "head", "post", "put", "patch"];
-  public actions: ResourceActionMap = {};
-  public state: Object;
-  private axios: Object;
-  private queryParams: Boolean;
+export class Resource {
+  private baseURL: string
+  private readonly HTTPMethod: Array<string> = ["get", "delete", "head", "options", "post", "put", "patch"]
+  public actions: ResourceActionMap = {}
+  public state: Object
+  public axios: AxiosInstance
+  private queryParams: Boolean
 
-  constructor(baseURL: string, options: ResourceOptions = {}) {
-    this.baseURL = baseURL;
-    this.actions = {};
-    this.state = options.state || {};
-    this.axios = options.axios || axios;
-    this.queryParams = options.queryParams || false;
+  constructor(options: ResourceOptions) {
+    this.baseURL = options.baseURL
+    this.actions = {}
+    this.state = options.state || {}
+    this.axios = options.axios || axios
+    this.queryParams = options.queryParams || false
   }
 
-  addAction(options: ResourceActionOptions): Resource {
-    options.method = options.method || "get";
-    options.requestConfig = options.requestConfig || {};
-
-    if (!options.property) {
-      throw new Error("'property' field must be set.");
-    }
+  add(options: ResourceActionOptions): Resource {
+    options.method = options.method || "get"
+    options.requestConfig = options.requestConfig || {}
+    options.property = options.property || null
+    const headersFn = this.getHeadersFn(options);
 
     if (this.HTTPMethod.indexOf(options.method) === -1) {
-      const methods = this.HTTPMethod.join(", ");
+      const methods = this.HTTPMethod.join(", ")
       throw new Error(`Illegal HTTP method set. Following methods are allowed: ${methods}. You chose "${options.method}".`)
     }
 
-    const completePathFn = (params: Object) => this.baseURL + options.pathFn(params);
+    let urlFn: Function
+    if (typeof options.path === "function") {
+      const pathFn: Function = options.path
+      urlFn = (params: Object) => pathFn(params)
+    } else {
+      urlFn = () => options.path
+    }
 
     this.actions[options.action] = {
       requestFn: (params: Object = {}, data: Object = {}) => {
 
-        let queryParams;
+        let queryParams
         // use action specific queryParams if set
         if (options.queryParams !== undefined) {
-          queryParams = options.queryParams;
+          queryParams = options.queryParams
           // otherwise use Resource-wide queryParams
         } else {
-          queryParams = this.queryParams;
+          queryParams = this.queryParams
         }
 
-        const requestConfig = Object.assign({}, options.requestConfig);
+        const requestConfig = Object.assign({}, options.requestConfig)
         const paramsSerializer = options.requestConfig["paramsSerializer"] !== undefined ||
-          this.axios["defaults"]["paramsSerializer"] !== undefined
+          this.axios.defaults.paramsSerializer !== undefined
         if (queryParams || paramsSerializer) {
-          requestConfig["params"] = params;
+          requestConfig["params"] = params
         }
+
+        if (headersFn) {
+          if (requestConfig["headers"]) {
+            Object.assign(requestConfig["headers"], headersFn(params))
+          } else {
+            requestConfig["headers"] = headersFn(params)
+          }
+        }
+
+        // This is assignment is made to respect the priority of the base URL
+        // It is as following: baseURL > axios instance base URL > request config base URL
+        const requestConfigWithProperBaseURL = Object.assign({
+          baseURL: this.normalizedBaseURL
+        }, requestConfig)
 
         if (["post", "put", "patch"].indexOf(options.method) > -1) {
-          return this.axios[options.method](completePathFn(params), data, requestConfig);
+          return this.axios[options.method](urlFn(params), data, requestConfigWithProperBaseURL)
         } else {
-          return this.axios[options.method](completePathFn(params), requestConfig);
+          return this.axios[options.method](urlFn(params), requestConfigWithProperBaseURL)
         }
       },
       property: options.property,
-      mutationSuccessFn: options.mutationSuccessFn,
-      mutationFailureFn: options.mutationFailureFn,
+      beforeRequest: options.beforeRequest,
+      onSuccess: options.onSuccess,
+      onError: options.onError,
       dispatchString: this.getDispatchString(options.action),
-      commitString: this.getCommitString(options.action)
-    };
+      commitString: this.getCommitString(options.action),
+      axios: this.axios
+    }
 
-    return this;
+    return this
+  }
+
+  private getHeadersFn(options: ResourceActionOptions) {
+    if (options.headers) {
+      if (typeof options.headers === "function") {
+        const headersFunction: Function = options.headers
+        return (params: Object) => headersFunction(params)
+      }
+      else {
+        return () => options.headers
+      }
+    }
+
+    return null
+  }
+
+  private get normalizedBaseURL(): string {
+    return this.baseURL || this.axios.defaults.baseURL || ""
   }
 
   private getDispatchString(action: string): string {
-    return action;
+    return action
   }
 
   private getCommitString(action: string): string {
-    const capitalizedAction: string = action.replace(/([A-Z])/g, "_$1").toUpperCase();
-    return capitalizedAction;
+    const capitalizedAction: string = action.replace(/([A-Z])/g, "_$1").toUpperCase()
+    return capitalizedAction
   }
 }
+
+export default Resource
