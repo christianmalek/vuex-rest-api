@@ -15,7 +15,9 @@
     "axios": "0.18.x"
   },
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "devDependencies": {
     "typescript": "2.7.x"
