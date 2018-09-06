@@ -31,9 +31,8 @@ If you want to connect a REST API with Vuex you'll find that there are a few rep
 It's just a helper utility to help prepraring the store object for you. If there's something you don't like just overwrite the property.
 
 ## Installation
-Please note that npm per default tries to install version 2. But this version isn't fully tested yet. So please use version 1 at the moment. Therefore you need to define the version during the installation like this:
 ```bash
-npm install vuex-rest-api@1.x
+npm install vuex-rest-api
 ```
 
 > Some notes: This readme assumes that you're using at least ES2015.
