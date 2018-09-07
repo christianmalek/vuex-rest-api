@@ -5,7 +5,8 @@
     <p>Counter: {{ counter }}</p>
     <button @click="increment">increase counter</button>
     <button @click="create">create post</button>
-    <button @click="getOptimisticPosts()">optimistic post</button>
+    <button @click="getOptimisticPosts({params: {id: 12}, data: {a: 1, b: 'foo'}})">optimistic post</button>
+    <button @click="getPost({params: {id: 12}, data: {a: 1, b: 'foo'}})">get post with id 12</button>
   </div>
 </template>
 
@@ -32,6 +33,7 @@ export default {
       })
     },
     ...mapActions([
+      "getPost",
       "getPosts",
       "getPostsWithHeaderObject",
       "getPostsWithHeaderFn",

@@ -2,6 +2,10 @@
 
 (format is `dd.mm.yyyy`)
 
+### 2.10.0 (07.09.2018)
+- added parameter `{ params, data}` to `onSuccess` and `onError` functions (see readme for more info)
+- updated `typescript` dev dependency to version 3.0.x
+
 ### 2.9.0 (12.08.2018)
 - added `beforeRequest` function to enable optimistic updates (contributed by @BorisTB, see https://github.com/christianmalek/vuex-rest-api/pull/71)
 

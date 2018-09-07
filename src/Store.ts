@@ -120,7 +120,7 @@ class StoreCreator {
     Object.keys(actions).forEach((action) => {
       const { property, commitString, beforeRequest, onSuccess, onError, axios } = actions[action]
 
-      mutations[`${commitString}`] = (state, params) => {
+      mutations[`${commitString}`] = (state, actionParams) => {
 
         if (property !== null) {
           state.pending[property] = true
@@ -128,10 +128,10 @@ class StoreCreator {
         }
 
         if (beforeRequest) {
-          beforeRequest(state, params)
+          beforeRequest(state, actionParams)
         }
       }
-      mutations[`${commitString}_${this.successSuffix}`] = (state, payload) => {
+      mutations[`${commitString}_${this.successSuffix}`] = (state, { payload, actionParams }) => {
 
         if (property !== null) {
           state.pending[property] = false
@@ -139,12 +139,12 @@ class StoreCreator {
         }
 
         if (onSuccess) {
-          onSuccess(state, payload, axios)
+          onSuccess(state, payload, axios, actionParams)
         } else if (property !== null) {
           state[property] = payload.data
         }
       }
-      mutations[`${commitString}_${this.errorSuffix}`] = (state, payload) => {
+      mutations[`${commitString}_${this.errorSuffix}`] = (state, { payload, actionParams }) => {
 
         if (property !== null) {
           state.pending[property] = false
@@ -152,7 +152,7 @@ class StoreCreator {
         }
 
         if (onError) {
-          onError(state, payload, axios)
+          onError(state, payload, axios, actionParams)
         } else if (property !== null) {
 
           // sets property to it's default value in case of an error
@@ -180,10 +180,14 @@ class StoreCreator {
         commit(commitString, actionParams)
         return requestFn(actionParams.params, actionParams.data)
           .then((response) => {
-            commit(`${commitString}_${this.successSuffix}`, response)
+            commit(`${commitString}_${this.successSuffix}`, {
+              payload: response, actionParams
+            })
             return Promise.resolve(response)
           }, (error) => {
-            commit(`${commitString}_${this.errorSuffix}`, error)
+            commit(`${commitString}_${this.errorSuffix}`, {
+              payload: error, actionParams
+            })
             return Promise.reject(error)
           })
       }

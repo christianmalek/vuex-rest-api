@@ -282,7 +282,7 @@ If the headers don't have to be evaluted on every request, just pass them via an
 - **Usage**: This function will be called after successfully resolving the action. If you define this property, only the corresponding pending and error properties will be set, but not `state[property]`.
 ```js
 {
-  onSuccess: (state, payload, axios) => {
+  onSuccess: (state, payload, axios, { params, data }) => {
     // if you set the onSuccess function you have to set the state manually
     state.posts = payload.data
     state.post = payload.data[0]
@@ -296,7 +296,7 @@ If the headers don't have to be evaluted on every request, just pass them via an
 - **Usage**: This function will be called if the action request fails. If you define this property, only the corresponding `pending` and `error` properties of the set `property` will be set, but not `state[property]`.
 ```js
 {
-  onError: (state, error, axios) => {
+  onError: (state, error, axios, { params, data }) => {
     Toast.showError(`Oops, there was following error: ${error}`)
 
     // if you set the onError function you have to set the state manually

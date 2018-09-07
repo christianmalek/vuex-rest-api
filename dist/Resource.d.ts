@@ -41,9 +41,9 @@ export declare class Resource {
     private queryParams;
     constructor(options: ResourceOptions);
     add(options: ResourceActionOptions): Resource;
-    private getHeadersFn(options);
+    private getHeadersFn;
     private readonly normalizedBaseURL;
-    private getDispatchString(action);
-    private getCommitString(action);
+    private getDispatchString;
+    private getCommitString;
 }
 export default Resource;

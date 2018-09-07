@@ -1,6 +1,6 @@
 {
   "name": "vuex-rest-api",
-  "version": "2.9.0",
+  "version": "2.10.0",
   "description": "A helper utility to simplify the usage of REST APIs with Vuex. Based on axios.",
   "author": "Christian Malek",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "docs:build": "vuepress build docs"
   },
   "devDependencies": {
-    "typescript": "2.7.x"
+    "typescript": "3.0.x"
   },
   "files": [
     "dist",

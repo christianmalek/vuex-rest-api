@@ -14,8 +14,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -110,34 +110,36 @@ var StoreCreator = /** @class */ (function () {
         var actions = this.resource.actions;
         Object.keys(actions).forEach(function (action) {
             var _a = actions[action], property = _a.property, commitString = _a.commitString, beforeRequest = _a.beforeRequest, onSuccess = _a.onSuccess, onError = _a.onError, axios = _a.axios;
-            mutations["" + commitString] = function (state, params) {
+            mutations["" + commitString] = function (state, actionParams) {
                 if (property !== null) {
                     state.pending[property] = true;
                     state.error[property] = null;
                 }
                 if (beforeRequest) {
-                    beforeRequest(state, params);
+                    beforeRequest(state, actionParams);
                 }
             };
-            mutations[commitString + "_" + _this.successSuffix] = function (state, payload) {
+            mutations[commitString + "_" + _this.successSuffix] = function (state, _a) {
+                var payload = _a.payload, actionParams = _a.actionParams;
                 if (property !== null) {
                     state.pending[property] = false;
                     state.error[property] = null;
                 }
                 if (onSuccess) {
-                    onSuccess(state, payload, axios);
+                    onSuccess(state, payload, axios, actionParams);
                 }
                 else if (property !== null) {
                     state[property] = payload.data;
                 }
             };
-            mutations[commitString + "_" + _this.errorSuffix] = function (state, payload) {
+            mutations[commitString + "_" + _this.errorSuffix] = function (state, _a) {
+                var payload = _a.payload, actionParams = _a.actionParams;
                 if (property !== null) {
                     state.pending[property] = false;
                     state.error[property] = payload;
                 }
                 if (onError) {
-                    onError(state, payload, axios);
+                    onError(state, payload, axios, actionParams);
                 }
                 else if (property !== null) {
                     // sets property to it's default value in case of an error
@@ -166,10 +168,14 @@ var StoreCreator = /** @class */ (function () {
                         commit(commitString, actionParams);
                         return [2 /*return*/, requestFn(actionParams.params, actionParams.data)
                                 .then(function (response) {
-                                commit(commitString + "_" + _this.successSuffix, response);
+                                commit(commitString + "_" + _this.successSuffix, {
+                                    payload: response, actionParams: actionParams
+                                });
                                 return Promise.resolve(response);
                             }, function (error) {
-                                commit(commitString + "_" + _this.errorSuffix, error);
+                                commit(commitString + "_" + _this.errorSuffix, {
+                                    payload: error, actionParams: actionParams
+                                });
                                 return Promise.reject(error);
                             })];
                     });

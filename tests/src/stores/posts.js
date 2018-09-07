@@ -14,9 +14,9 @@ const posts = new Vapi({
   })
   .get({
     action: "getOptimisticPosts",
-    beforeRequest: (state, params) => {
+    beforeRequest: (state, { params, data }) => {
       state.posts = [1, 2, 3, 4, 5]
-      console.log(params)
+      console.log(params, data)
     },
     property: "posts",
     path: "/posts"
@@ -26,6 +26,18 @@ const posts = new Vapi({
     property: "posts",
     path: "/posts",
     headers: { foo: 123 }
+  })
+  .get({
+    action: "getPost",
+    property: "post",
+    path: ({ id }) => `/possts/${id}`,
+    onSuccess(state, payload, axios, actionParams) {
+      state.post = payload.data
+      console.log(actionParams)
+    },
+    onError(state, error, axios, actionParams) {
+      console.log(actionParams, error)
+    }
   })
   .get({
     action: "getPosts",
