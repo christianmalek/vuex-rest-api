@@ -5,6 +5,7 @@ module.exports = {
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
+      { text: "GitHub", link: "https://github.com/christianmalek/vuex-rest-api"}
     ],
     sidebar: [
       "/",
