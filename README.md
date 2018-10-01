@@ -28,7 +28,7 @@ npm install vuex-rest-api
 1. Create the actions.  
    Each action represents a Vuex action. If it will be called (property `action`), it requests a specific API endpoint (property `path`) and sets the related property named `property` to the response's payload.
 1. Create the store object
-1. Pass it to Vuex. Continue reading [here](#calling-the-actions) to know how to *call the actions*.
+1. Pass it to Vuex. Continue reading [here](https://christianmalek.github.io/vuex-rest-api/miscellaneous.html#calling-the-actions) to know how to *call the actions*.
 
 ```js
 // store.js
