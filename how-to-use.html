@@ -7,7 +7,7 @@
     <meta name="description" content="A helper utility to simplify the usage of REST APIs with Vuex">
     
     
-    <link rel="preload" href="/vuex-rest-api/assets/css/0.styles.89939eda.css" as="style"><link rel="preload" href="/vuex-rest-api/assets/js/app.8726ef4a.js" as="script"><link rel="preload" href="/vuex-rest-api/assets/js/7.4f123d65.js" as="script"><link rel="prefetch" href="/vuex-rest-api/assets/js/3.2b4c7406.js"><link rel="prefetch" href="/vuex-rest-api/assets/js/2.cda51ec0.js"><link rel="prefetch" href="/vuex-rest-api/assets/js/4.875c9a90.js"><link rel="prefetch" href="/vuex-rest-api/assets/js/5.ecb5ba1a.js"><link rel="prefetch" href="/vuex-rest-api/assets/js/6.bc1a9729.js"><link rel="prefetch" href="/vuex-rest-api/assets/js/8.9b60fd6e.js">
+    <link rel="preload" href="/vuex-rest-api/assets/css/0.styles.89939eda.css" as="style"><link rel="preload" href="/vuex-rest-api/assets/js/app.62022365.js" as="script"><link rel="preload" href="/vuex-rest-api/assets/js/7.a393f670.js" as="script"><link rel="prefetch" href="/vuex-rest-api/assets/js/3.2b4c7406.js"><link rel="prefetch" href="/vuex-rest-api/assets/js/2.cda51ec0.js"><link rel="prefetch" href="/vuex-rest-api/assets/js/4.875c9a90.js"><link rel="prefetch" href="/vuex-rest-api/assets/js/5.ecb5ba1a.js"><link rel="prefetch" href="/vuex-rest-api/assets/js/6.bc1a9729.js"><link rel="prefetch" href="/vuex-rest-api/assets/js/8.9b60fd6e.js">
     <link rel="stylesheet" href="/vuex-rest-api/assets/css/0.styles.89939eda.css">
   </head>
   <body>
@@ -18,7 +18,7 @@
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/vuex-rest-api/" class="sidebar-link">Introduction</a></li><li><a href="/vuex-rest-api/how-to-use.html" class="active sidebar-link">How to use</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/vuex-rest-api/how-to-use.html#steps" class="sidebar-link">Steps</a></li></ul></li><li><a href="/vuex-rest-api/api.html" class="sidebar-link">API</a></li><li><a href="/vuex-rest-api/miscellaneous.html" class="sidebar-link">Miscellaneous</a></li><li><a href="/vuex-rest-api/changelog.html" class="sidebar-link">Changelog</a></li></ul> </div> <div class="page"> <div class="content"><h1 id="how-to-use"><a href="#how-to-use" aria-hidden="true" class="header-anchor">#</a> How to use</h1> <p>This page shows an simple example how to setup and use <em>vuex-rest-api</em>.</p> <h2 id="steps"><a href="#steps" aria-hidden="true" class="header-anchor">#</a> Steps</h2> <ol><li>Import <code>vuex-rest-api</code> (I called it <code>Vapi</code>).</li> <li>Create a <code>Vapi</code> instance.<br>
 At least you have to set the base URL of the API you're requesting from. You can also define the default state. If you don't define a default state from a property it will default to <code>null</code>.
 In the example</li> <li>Create the actions.<br>
-Each action represents a Vuex action. If it will be called (property <code>action</code>), it requests a specific API endpoint (property <code>path</code>) and sets the related property named <code>property</code> to the response's payload.</li> <li>Create the store object</li> <li>Pass it to Vuex. Continue reading <a href="#calling-the-actions">here</a> to know how to <em>call the actions</em>.</li></ol> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// store.js</span>
+Each action represents a Vuex action. If it will be called (property <code>action</code>), it requests a specific API endpoint (property <code>path</code>) and sets the related property named <code>property</code> to the response's payload.</li> <li>Create the store object</li> <li>Pass it to Vuex. Continue reading <a href="/vuex-rest-api/miscellaneous.html#calling-the-actions">here</a> to know how to <em>call the actions</em>.</li></ol> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// store.js</span>
 
 <span class="token keyword">import</span> Vuex <span class="token keyword">from</span> <span class="token string">&quot;vuex&quot;</span>
 <span class="token keyword">import</span> Vue <span class="token keyword">from</span> <span class="token string">&quot;vue&quot;</span>
@@ -64,6 +64,6 @@ Vue<span class="token punctuation">.</span><span class="token function">use</spa
         </a>
         →
       </span></p></div> </div> <!----></div></div>
-    <script src="/vuex-rest-api/assets/js/7.4f123d65.js" defer></script><script src="/vuex-rest-api/assets/js/app.8726ef4a.js" defer></script>
+    <script src="/vuex-rest-api/assets/js/7.a393f670.js" defer></script><script src="/vuex-rest-api/assets/js/app.62022365.js" defer></script>
   </body>
 </html>
