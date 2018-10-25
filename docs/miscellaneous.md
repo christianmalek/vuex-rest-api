@@ -120,3 +120,44 @@ export default {
 }
 </script>
 ```
+
+## Nuxt
+
+*Thanks goes out to [*appinteractive*](https://github.com/appinteractive) for finding out how to use vuex-rest-api with nuxt.*
+
+If you want to use vuex-rest-api with nuxt you can do it like the following:
+
+1. Install the nuxt axios module: https://axios.nuxtjs.org/setup
+
+2. Write a plugin and register it in your nuxt application.
+```js
+// plugins/init-store-modules.js
+export default async ({store, app}) => {
+  await store.dispatch('initStoreModules', {store: store, axios: app.$axios})
+}
+```
+
+2. Create the store and define the `initStoreModules` action. That's all!
+```js
+// store/index.js
+
+import Vuex from 'vuex'
+import userStore from './users'
+
+const createStore = () => {
+  return new Vuex.Store({
+    state: {
+    },
+    mutations: {
+    },
+    actions: {
+      async initStoreModules ({state}, {store, axios}) {
+        // see https://vuex.vuejs.org/api/#registermodule for more details
+        await store.registerModule('users', userStore(axios));
+      }
+    }
+  })
+}
+
+export default createStore
+```
