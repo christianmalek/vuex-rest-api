@@ -137,7 +137,7 @@ export default async ({store, app}) => {
 }
 ```
 
-2. Create the store and define the `initStoreModules` action. That's all!
+3. Create the store and define the `initStoreModules` action. That's all!
 ```js
 // store/index.js
 

@@ -1,7 +1,7 @@
 # API
 The following sections explain the API of the `Vapi` class.
 
-### `constructor(options:Object):Vapi`
+## `constructor(options:Object):Vapi`
 
 Creates a new `Vapi` instance and returns it.
 
@@ -11,12 +11,12 @@ const vapi = new Vapi(options)
 
 The parameter `options` consists of the following properties:
 
-#### `# axios`
+### `# axios`
 - **Type**: `axios` (instance)  
 - **Default**: `axios` (instance)  
 - **Usage**: The axios instance to use for the requests. This is pretty useful if you use a package like websanova/vue-auth which sets automatically the Authorization header. So you don't need to care. If you don't pass an instance, it will use the global axios instance.  
 
-#### `# baseURL`
+### `# baseURL`
 - **Type**: `string`
 - **Usage**: The API's base URL without a specific endpoint's path. It's usage is optional. If you don't set it, it will use the base URL of the axios instance. Please note that `baseURL` has a higher priority than the baseURL set in the passed axios instance. You can also set base URL in the request config when you add an action. The priority is as following:
 
@@ -27,7 +27,7 @@ The parameter `options` consists of the following properties:
 }
 ```
 
-#### `# queryParams`  
+### `# queryParams`  
 - **Type**: `boolean` 
 - **Default**: If you don't set a property's default value the value is `null`.  
 - **Usage**: If you want to append the params to the request URL, set this property to true. You can also set this option in every action you need it if you don't need it for every action.
@@ -37,7 +37,7 @@ The parameter `options` consists of the following properties:
 }
 ```
 
-#### `# state`
+### `# state`
 - **Type**: `Object`
 - **Default**: Every property will default to `null`.
 - **Usage**: The default state of your properties.  
@@ -51,13 +51,13 @@ The parameter `options` consists of the following properties:
 ```
 Sets post to `null` and posts to an empty array.
 
-### `add(options):Vapi`
+## `add(options):Vapi`
 
 Adds an action to access an API endpoint and returns the `Vapi` instance.
 
 The parameter `options` consists of the following properties:
 
-#### `# action` (required)
+### `# action` (required)
 - **Type**: `string`  
 - **Usage**: The name of the action.
 ```js
@@ -66,7 +66,7 @@ The parameter `options` consists of the following properties:
 }
 ```
 
-#### `# method`
+### `# method`
 - **Type**: `string`  
 - **Default**: `"get"`  
 - **Usage**: The HTTP method to request the API. Following HTTP Methods are allowed at the moment:
@@ -98,7 +98,7 @@ vrap.delete({
 })
 ```
 
-#### `# property`
+### `# property`
 - **Type**: `string`
 - **Default**: `null`
 - **Usage**: The property of the state which should be automatically changed if the resolve is successfully.
@@ -115,7 +115,7 @@ Sometimes you have to set the state by yourself. In that case you may consider t
 - Because the property's name is unknown *vuex-rest-api* can't set the initial state for this property. You have to set the initial state by yourself.
 - In the case of successful requests there will be nothing done with the payload. You have to set the `onSuccess` method to set the state (with the payload) by yourself.
 
-#### `# path` (required)
+### `# path` (required)
 - **Type**: `Function|string`  
 - **Usage**: This property can either be a function or a path describing the rest of the API address (without the base URL).
 
@@ -135,7 +135,7 @@ Maybe the API endpoint needs no parameters. Then you can use a string like this:
 }
 ```
 
-#### `# headers`
+### `# headers`
 - **Type**: `Function|Object`  
 - **Usage**: This property allows to provide dynamic headers for every request. It can either be a function or an object.
 
@@ -173,7 +173,7 @@ If the headers don't have to be evaluted on every request, just pass them via an
 }
 ```
 
-#### `# beforeRequest`
+### `# beforeRequest`
 - **Type**: `Function`  
 - **Default**: `undefined`  
 - **Usage**: This function will be called before resolving the action, so you can update the state optimistically. If you need to handle the rejected/resolved response just use the `onSuccess` and `onError` functions.
@@ -185,7 +185,7 @@ If the headers don't have to be evaluted on every request, just pass them via an
 }
 ```
 
-#### `# onSuccess`
+### `# onSuccess`
 - **Type**: `Function`
 - **Default**: `undefined`
 - **Usage**: This function will be called after successfully resolving the action. If you define this property, only the corresponding pending and error properties will be set, but not `state[property]`.
@@ -199,7 +199,7 @@ If the headers don't have to be evaluted on every request, just pass them via an
 }
 ```
 
-#### `# onError`
+### `# onError`
 - **Type**: `Function`  
 - **Default**: `undefined`  
 - **Usage**: This function will be called if the action request fails. If you define this property, only the corresponding `pending` and `error` properties of the set `property` will be set, but not `state[property]`.
@@ -214,7 +214,7 @@ If the headers don't have to be evaluted on every request, just pass them via an
 }
 ```
 
-#### `# requestConfig`
+### `# requestConfig`
 - **Type**: `Object`  
 - **Default**: `{}`  
 - **Usage**: An [`axios.requestConfig`](https://github.com/mzabriskie/axios#request-config) object. Please note that the passed HTTP method (see `options.method` above) won't be changed.
@@ -231,7 +231,7 @@ If the headers don't have to be evaluted on every request, just pass them via an
 }
 ```
 
-#### `# queryParams`
+### `# queryParams`
 - **Type**: `boolean`  
 - **Default**: `undefined`  
 - **Usage**: If you want to append the params to the request URL, set this property to true.
@@ -241,13 +241,13 @@ If the headers don't have to be evaluted on every request, just pass them via an
 }
 ```
 
-### `getStore(options):Object`
+## `getStore(options):Object`
 
 Creates an object you can pass to Vuex to add a store.
 
 The parameter `options` consists of the following properties:
 
-#### `# createStateFn`
+### `# createStateFn`
 - **Type**: `boolean`  
 - **Default**: `false`
 - **Usage**: Decides if the state should be returned as a function or an object. This option has to be changed if you want to share the state of your created store. Read chapter *module reuse* in the [Vuex documentation](https://vuex.vuejs.org/en/modules.html) for more details.
