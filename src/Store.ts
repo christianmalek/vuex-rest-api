@@ -2,6 +2,7 @@ import Resource, { ResourceActionMap } from "./Resource"
 import * as cloneDeep from "lodash.clonedeep"
 
 export interface Store {
+  namespaced: Boolean,
   state: Object | Function
   mutations: MutationMap
   actions: ActionMap
@@ -9,7 +10,8 @@ export interface Store {
 
 export interface StoreOptions {
   // see "module reuse" under https://vuex.vuejs.org/en/modules.html
-  createStateFn?: Boolean
+  createStateFn?: Boolean,
+  namespaced?: Boolean
 }
 
 export interface ActionMap {
@@ -35,7 +37,8 @@ class StoreCreator {
   constructor(resource: Resource, options: StoreOptions) {
     this.resource = resource
     this.options = Object.assign({
-      createStateFn: false
+      createStateFn: false,
+      namespaced: false
     }, options)
 
     this.store = this.createStore()
@@ -200,6 +203,7 @@ class StoreCreator {
     const state = this.createState()
 
     return {
+      namespaced: this.options.namespaced,
       state,
       mutations: this.createMutations(state),
       actions: this.createActions()

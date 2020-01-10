@@ -1,11 +1,13 @@
 import Resource from "./Resource";
 export interface Store {
+    namespaced: Boolean;
     state: Object | Function;
     mutations: MutationMap;
     actions: ActionMap;
 }
 export interface StoreOptions {
     createStateFn?: Boolean;
+    namespaced?: Boolean;
 }
 export interface ActionMap {
     [action: string]: Function;
