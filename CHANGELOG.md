@@ -2,6 +2,13 @@
 
 (format is `dd.mm.yyyy`)
 
+### 2.12.0 (16.01.2020)
+- add `namespaced` flag (contributed by @johndab, see https://github.com/christianmalek/vuex-rest-api/pull/99)
+
+### 2.11.0 (20.10.2019)
+- updated lodash dependency to version `^4.5`
+- updated typescript dev dependency to version `^3.6`
+
 ### 2.10.0 (07.09.2018)
 - added parameter `{ params, data}` to `onSuccess` and `onError` functions (see readme for more info)
 - updated `typescript` dev dependency to version 3.0.x
