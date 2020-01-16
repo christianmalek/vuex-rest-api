@@ -247,6 +247,16 @@ Creates an object you can pass to Vuex to add a store.
 
 The parameter `options` consists of the following properties:
 
+### `# namespaced`
+- **Type**: `boolean`  
+- **Default**: `false`
+- **Usage**: Makes the returned module [namespaced](https://vuex.vuejs.org/guide/modules.html#namespacing).
+```js
+{
+  namespaced: false
+}
+```
+
 ### `# createStateFn`
 - **Type**: `boolean`  
 - **Default**: `false`
