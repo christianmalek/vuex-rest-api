@@ -2,16 +2,16 @@ import Resource, { ResourceActionMap } from "./Resource"
 import * as cloneDeep from "lodash.clonedeep"
 
 export interface Store {
-  namespaced: Boolean,
-  state: Object | Function
+  namespaced: boolean,
+  state: object | Function
   mutations: MutationMap
   actions: ActionMap
 }
 
 export interface StoreOptions {
   // see "module reuse" under https://vuex.vuejs.org/en/modules.html
-  createStateFn?: Boolean,
-  namespaced?: Boolean
+  createStateFn?: boolean,
+  namespaced?: boolean
 }
 
 export interface ActionMap {
@@ -23,8 +23,8 @@ export interface MutationMap {
 }
 
 interface ActionParamsBody {
-  params: Object
-  data: Object
+  params: object
+  data: object
 }
 
 class StoreCreator {
@@ -44,7 +44,7 @@ class StoreCreator {
     this.store = this.createStore()
   }
 
-  createState(): Object | Function {
+  createState(): object | Function {
     if (this.options.createStateFn) {
       return this.createStateFn()
     } else {
@@ -52,10 +52,10 @@ class StoreCreator {
     }
   }
 
-  private createStateObject(): Object {
-    const resourceState: Object = cloneDeep(this.resource.state)
+  private createStateObject(): object {
+    const resourceState: object = cloneDeep(this.resource.state)
 
-    const state: Object = Object.assign({
+    const state: object = Object.assign({
       pending: {},
       error: {}
     }, resourceState)
@@ -82,10 +82,10 @@ class StoreCreator {
   }
 
   private createStateFn(): Function {
-    return (): Object => {
-      const resourceState: Object = cloneDeep(this.resource.state)
+    return (): object => {
+      const resourceState: object = cloneDeep(this.resource.state)
 
-      const state: Object = Object.assign({
+      const state: object = Object.assign({
         pending: {},
         error: {}
       }, resourceState)
@@ -112,11 +112,11 @@ class StoreCreator {
     }
   }
 
-  createGetter(): Object {
+  createGetter(): object {
     return {}
   }
 
-  createMutations(defaultState: Object): MutationMap {
+  createMutations(defaultState: object): MutationMap {
     const mutations = {}
 
     const actions = this.resource.actions
