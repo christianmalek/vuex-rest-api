@@ -2,6 +2,9 @@
 
 (format is `dd.mm.yyyy`)
 
+### 2.12.1 (21.02.2020)
+- fix typing for boxed type (contributed by @Glandos, see https://github.com/christianmalek/vuex-rest-api/pull/101)
+
 ### 2.12.0 (16.01.2020)
 - add `namespaced` flag (contributed by @johndab, see https://github.com/christianmalek/vuex-rest-api/pull/99)
 

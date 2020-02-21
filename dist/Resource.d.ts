@@ -42,7 +42,7 @@ export declare class Resource {
     constructor(options: ResourceOptions);
     add(options: ResourceActionOptions): Resource;
     private getHeadersFn;
-    private readonly normalizedBaseURL;
+    private get normalizedBaseURL();
     private getDispatchString;
     private getCommitString;
 }
