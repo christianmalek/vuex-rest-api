@@ -100,17 +100,15 @@ export class Resource {
           }
         }
 
-        // This is assignment is made to respect the priority of the base URL
+        // This is assignment is made to respect the priority of the base URL, url, method and data.
         // It is as following: baseURL > axios instance base URL > request config base URL
-        const requestConfigWithProperBaseURL = Object.assign({
-          baseURL: this.normalizedBaseURL
+        const fullRequestConfig = Object.assign({
+          method: options.method,
+          url: urlFn(params),
+          baseURL: this.normalizedBaseURL,
+          data: data
         }, requestConfig)
-
-        if (["post", "put", "patch"].indexOf(options.method) > -1) {
-          return this.axios[options.method](urlFn(params), data, requestConfigWithProperBaseURL)
-        } else {
-          return this.axios[options.method](urlFn(params), requestConfigWithProperBaseURL)
-        }
+        return this.axios.request(fullRequestConfig)
       },
       property: options.property,
       beforeRequest: options.beforeRequest,
