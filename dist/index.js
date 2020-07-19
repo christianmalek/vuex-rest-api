@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Vapi = void 0;
 var Store_1 = require("./Store");
 var Resource_1 = require("./Resource");
 var Vapi = /** @class */ (function () {

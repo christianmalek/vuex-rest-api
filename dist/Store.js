@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createStore = void 0;
 var cloneDeep = require("lodash.clonedeep");
 var StoreCreator = /** @class */ (function () {
     function StoreCreator(resource, options) {
@@ -171,12 +172,14 @@ var StoreCreator = /** @class */ (function () {
                         return [2 /*return*/, requestFn(actionParams.params, actionParams.data)
                                 .then(function (response) {
                                 commit(commitString + "_" + _this.successSuffix, {
-                                    payload: response, actionParams: actionParams
+                                    payload: response,
+                                    actionParams: actionParams
                                 });
                                 return Promise.resolve(response);
                             }, function (error) {
                                 commit(commitString + "_" + _this.errorSuffix, {
-                                    payload: error, actionParams: actionParams
+                                    payload: error,
+                                    actionParams: actionParams
                                 });
                                 return Promise.reject(error);
                             })];

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Resource = void 0;
 var axios_1 = require("axios");
 var Resource = /** @class */ (function () {
     function Resource(options) {
@@ -56,17 +57,15 @@ var Resource = /** @class */ (function () {
                         requestConfig["headers"] = headersFn(params);
                     }
                 }
-                // This is assignment is made to respect the priority of the base URL
+                // This is assignment is made to respect the priority of the base URL, url, method and data.
                 // It is as following: baseURL > axios instance base URL > request config base URL
-                var requestConfigWithProperBaseURL = Object.assign({
-                    baseURL: _this.normalizedBaseURL
+                var fullRequestConfig = Object.assign({
+                    method: options.method,
+                    url: urlFn(params),
+                    baseURL: _this.normalizedBaseURL,
+                    data: data
                 }, requestConfig);
-                if (["post", "put", "patch"].indexOf(options.method) > -1) {
-                    return _this.axios[options.method](urlFn(params), data, requestConfigWithProperBaseURL);
-                }
-                else {
-                    return _this.axios[options.method](urlFn(params), requestConfigWithProperBaseURL);
-                }
+                return _this.axios.request(fullRequestConfig);
             },
             property: options.property,
             beforeRequest: options.beforeRequest,
@@ -94,7 +93,7 @@ var Resource = /** @class */ (function () {
         get: function () {
             return this.baseURL || this.axios.defaults.baseURL || "";
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Resource.prototype.getDispatchString = function (action) {
