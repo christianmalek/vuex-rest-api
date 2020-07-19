@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios"
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios"
 
 export interface ResourceAction {
   requestFn: Function,
@@ -103,7 +103,7 @@ export class Resource {
         // This is assignment is made to respect the priority of the base URL, url, method and data.
         // It is as following: baseURL > axios instance base URL > request config base URL
         const fullRequestConfig = Object.assign({
-          method: options.method,
+          method: options.method as AxiosRequestConfig["method"],
           url: urlFn(params),
           baseURL: this.normalizedBaseURL,
           data: data
