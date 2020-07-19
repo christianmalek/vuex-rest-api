@@ -30,7 +30,7 @@ const posts = new Vapi({
   .get({
     action: "getPost",
     property: "post",
-    path: ({ id }) => `/possts/${id}`,
+    path: ({ id }) => `/posts/${id}`,
     onSuccess(state, payload, axios, actionParams) {
       state.post = payload.data
       console.log(actionParams)
