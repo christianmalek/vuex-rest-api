@@ -11,7 +11,6 @@ var Resource = /** @class */ (function () {
         this.state = options.state || {};
         this.axios = options.axios || axios_1.default;
         this.queryParams = options.queryParams || false;
-        this.autoCancel = options.autoCancel || false;
     }
     Resource.prototype.add = function (options) {
         var _this = this;

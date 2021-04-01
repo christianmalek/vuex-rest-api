@@ -33,7 +33,6 @@ export interface ResourceOptions {
     state?: Object;
     axios?: AxiosInstance;
     queryParams?: Boolean;
-    autoCancel?: Boolean;
 }
 export declare class Resource {
     private baseURL;
@@ -42,7 +41,6 @@ export declare class Resource {
     state: Object;
     axios: AxiosInstance;
     private queryParams;
-    private autoCancel;
     constructor(options: ResourceOptions);
     add(options: ResourceActionOptions): Resource;
     private getHeadersFn;

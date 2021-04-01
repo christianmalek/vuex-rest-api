@@ -38,7 +38,6 @@ export interface ResourceOptions {
   state?: Object,
   axios?: AxiosInstance,
   queryParams?: Boolean,
-  autoCancel?: Boolean,
 }
 
 export class Resource {
@@ -48,7 +47,6 @@ export class Resource {
   public state: Object
   public axios: AxiosInstance
   private queryParams: Boolean
-  private autoCancel: Boolean
 
   constructor(options: ResourceOptions) {
     this.baseURL = options.baseURL
@@ -56,7 +54,6 @@ export class Resource {
     this.state = options.state || {}
     this.axios = options.axios || axios
     this.queryParams = options.queryParams || false
-    this.autoCancel = options.autoCancel || false
   }
 
   add(options: ResourceActionOptions): Resource {
