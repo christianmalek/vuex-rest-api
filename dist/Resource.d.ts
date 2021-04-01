@@ -1,6 +1,7 @@
 import { AxiosInstance } from "axios";
 export interface ResourceAction {
     requestFn: Function;
+    autoCancel: Boolean;
     beforeRequest: Function;
     onSuccess: Function;
     onError: Function;
@@ -16,6 +17,7 @@ export interface ShorthandResourceActionOptions {
     action: string;
     property?: string;
     path: Function | string;
+    autoCancel: Boolean;
     beforeRequest?: Function;
     onSuccess?: Function;
     onError?: Function;
@@ -31,6 +33,7 @@ export interface ResourceOptions {
     state?: Object;
     axios?: AxiosInstance;
     queryParams?: Boolean;
+    autoCancel?: Boolean;
 }
 export declare class Resource {
     private baseURL;
