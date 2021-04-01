@@ -11,6 +11,7 @@ var Resource = /** @class */ (function () {
         this.state = options.state || {};
         this.axios = options.axios || axios_1.default;
         this.queryParams = options.queryParams || false;
+        this.autoCancel = options.autoCancel || false;
     }
     Resource.prototype.add = function (options) {
         var _this = this;
@@ -51,7 +52,7 @@ var Resource = /** @class */ (function () {
                 else {
                     queryParams = _this.queryParams;
                 }
-                // if the queryParams config is disabled omit params in fullRequestConfig. This is to keep changes around
+                // If the queryParams config is disabled omit params in fullRequestConfig. This is to keep changes around
                 // passing in a complete AxiosRequestConfig backwards compatible with previous versions of the library where
                 // the ActionParams partial was used.
                 if (!queryParams) {

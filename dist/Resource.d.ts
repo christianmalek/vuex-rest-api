@@ -17,7 +17,7 @@ export interface ShorthandResourceActionOptions {
     action: string;
     property?: string;
     path: Function | string;
-    autoCancel: Boolean;
+    autoCancel?: Boolean;
     beforeRequest?: Function;
     onSuccess?: Function;
     onError?: Function;
@@ -42,6 +42,7 @@ export declare class Resource {
     state: Object;
     axios: AxiosInstance;
     private queryParams;
+    private autoCancel;
     constructor(options: ResourceOptions);
     add(options: ResourceActionOptions): Resource;
     private getHeadersFn;

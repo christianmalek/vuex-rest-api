@@ -20,7 +20,7 @@ export interface ShorthandResourceActionOptions {
   action: string
   property?: string
   path: Function | string
-  autoCancel: Boolean
+  autoCancel?: Boolean
   beforeRequest?: Function
   onSuccess?: Function
   onError?: Function
@@ -48,6 +48,7 @@ export class Resource {
   public state: Object
   public axios: AxiosInstance
   private queryParams: Boolean
+  private autoCancel: Boolean
 
   constructor(options: ResourceOptions) {
     this.baseURL = options.baseURL
@@ -55,6 +56,7 @@ export class Resource {
     this.state = options.state || {}
     this.axios = options.axios || axios
     this.queryParams = options.queryParams || false
+    this.autoCancel = options.autoCancel || false
   }
 
   add(options: ResourceActionOptions): Resource {
@@ -98,7 +100,7 @@ export class Resource {
           queryParams = this.queryParams
         }
 
-        // if the queryParams config is disabled omit params in fullRequestConfig. This is to keep changes around
+        // If the queryParams config is disabled omit params in fullRequestConfig. This is to keep changes around
         // passing in a complete AxiosRequestConfig backwards compatible with previous versions of the library where
         // the ActionParams partial was used.
         if (!queryParams) {
