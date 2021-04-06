@@ -13,17 +13,26 @@ const cancel = new Vapi({
     autoCancel: true,
     action: "getItemsLongRunningAutoCancel",
     property: "itemsAuto",
-    path: "/long-running"
+    path: "/long-running",
+    onCancel: (state, payload) => {
+      console.info("auto cancellation", state, payload)
+    }
   })
   .get({
     action: "getItemsLongRunningManual",
     property: "itemsManual",
-    path: "/long-running"
+    path: "/long-running",
+    onCancel: (state, payload) => {
+      console.info("manual cancellation", state, payload)
+    }
   })
   .get({
     action: "getItemsLongRunningControlled",
     property: "itemsControlled",
-    path: "/long-running"
+    path: "/long-running",
+    onCancel: (state, payload) => {
+      console.info("controlled cancellation", state, payload)
+    }
   })
   .getStore()
 

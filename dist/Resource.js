@@ -70,6 +70,7 @@ var Resource = /** @class */ (function () {
             autoCancel: options.autoCancel,
             beforeRequest: options.beforeRequest,
             onSuccess: options.onSuccess,
+            onCancel: options.onCancel,
             onError: options.onError,
             dispatchString: this.getDispatchString(options.action),
             commitString: this.getCommitString(options.action),

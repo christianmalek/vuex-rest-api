@@ -125,7 +125,7 @@ class StoreCreator {
 
     const actions = this.resource.actions
     Object.keys(actions).forEach((action) => {
-      const { property, commitString, autoCancel, beforeRequest, onSuccess, onError, axios } = actions[action]
+      const { property, commitString, autoCancel, beforeRequest, onSuccess, onCancel, onError, axios } = actions[action]
 
       mutations[`${commitString}`] = (state, requestConfig) => {
 
@@ -166,10 +166,18 @@ class StoreCreator {
       }
       mutations[`${commitString}_${this.errorSuffix}`] = (state, { payload, requestConfig }) => {
 
+        // Call onCancel if a cancellation error occurs, this can be helpful to let developers differentiate between
+        // a normal error path and something separate for cancellation. It will also be called if autoCancel is enabled
+        // where onError will not.
+        const isCancellationErr = axiosStatic.isCancel(payload)
+        if (typeof onCancel === 'function' && isCancellationErr) {
+          onCancel(state, payload, axios, requestConfig)
+        }
+
         // The logic here is as follows: if either autoCancel is disabled or the error was not a cancellation error,
         // we'll prevent error handling and clean up. We'll assume that for most cases where autoCancel is useful,
         // we'll want to effectively suspend the lifetime of the pending state until a retry occurs.
-        const shouldHandleErr = !autoCancel || !axiosStatic.isCancel(payload)
+        const shouldHandleErr = !autoCancel || !isCancellationErr
         if (!shouldHandleErr) {
           return;
         }

@@ -5,6 +5,7 @@ export interface ResourceAction {
   autoCancel: Boolean,
   beforeRequest: Function,
   onSuccess: Function,
+  onCancel: Function,
   onError: Function,
   property: string,
   dispatchString: string,
@@ -23,6 +24,7 @@ export interface ShorthandResourceActionOptions {
   autoCancel?: Boolean
   beforeRequest?: Function
   onSuccess?: Function
+  onCancel?: Function
   onError?: Function
   requestConfig?: Object
   queryParams?: Boolean
@@ -117,6 +119,7 @@ export class Resource {
       autoCancel: options.autoCancel,
       beforeRequest: options.beforeRequest,
       onSuccess: options.onSuccess,
+      onCancel: options.onCancel,
       onError: options.onError,
       dispatchString: this.getDispatchString(options.action),
       commitString: this.getCommitString(options.action),

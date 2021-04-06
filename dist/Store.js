@@ -118,7 +118,7 @@ var StoreCreator = /** @class */ (function () {
         var mutations = {};
         var actions = this.resource.actions;
         Object.keys(actions).forEach(function (action) {
-            var _a = actions[action], property = _a.property, commitString = _a.commitString, autoCancel = _a.autoCancel, beforeRequest = _a.beforeRequest, onSuccess = _a.onSuccess, onError = _a.onError, axios = _a.axios;
+            var _a = actions[action], property = _a.property, commitString = _a.commitString, autoCancel = _a.autoCancel, beforeRequest = _a.beforeRequest, onSuccess = _a.onSuccess, onCancel = _a.onCancel, onError = _a.onError, axios = _a.axios;
             mutations["" + commitString] = function (state, requestConfig) {
                 if (property !== null) {
                     state.pending[property] = true;
@@ -155,10 +155,17 @@ var StoreCreator = /** @class */ (function () {
             };
             mutations[commitString + "_" + _this.errorSuffix] = function (state, _a) {
                 var payload = _a.payload, requestConfig = _a.requestConfig;
+                // Call onCancel if a cancellation error occurs, this can be helpful to let developers differentiate between
+                // a normal error path and something separate for cancellation. It will also be called if autoCancel is enabled
+                // where onError will not.
+                var isCancellationErr = axios_1.default.isCancel(payload);
+                if (typeof onCancel === 'function' && isCancellationErr) {
+                    onCancel(state, payload, axios, requestConfig);
+                }
                 // The logic here is as follows: if either autoCancel is disabled or the error was not a cancellation error,
                 // we'll prevent error handling and clean up. We'll assume that for most cases where autoCancel is useful,
                 // we'll want to effectively suspend the lifetime of the pending state until a retry occurs.
-                var shouldHandleErr = !autoCancel || !axios_1.default.isCancel(payload);
+                var shouldHandleErr = !autoCancel || !isCancellationErr;
                 if (!shouldHandleErr) {
                     return;
                 }

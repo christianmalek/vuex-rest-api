@@ -4,6 +4,7 @@ export interface ResourceAction {
     autoCancel: Boolean;
     beforeRequest: Function;
     onSuccess: Function;
+    onCancel: Function;
     onError: Function;
     property: string;
     dispatchString: string;
@@ -20,6 +21,7 @@ export interface ShorthandResourceActionOptions {
     autoCancel?: Boolean;
     beforeRequest?: Function;
     onSuccess?: Function;
+    onCancel?: Function;
     onError?: Function;
     requestConfig?: Object;
     queryParams?: Boolean;
