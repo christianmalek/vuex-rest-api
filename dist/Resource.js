@@ -31,9 +31,17 @@ var Resource = /** @class */ (function () {
             urlFn = function () { return options.path; };
         }
         this.actions[options.action] = {
-            requestFn: function (params, data) {
-                if (params === void 0) { params = {}; }
-                if (data === void 0) { data = {}; }
+            requestFn: function (requestConfig) {
+                var tmpRequestConfig = Object.assign({}, requestConfig, options.requestConfig);
+                var params = tmpRequestConfig.params;
+                if (headersFn) {
+                    if (tmpRequestConfig["headers"]) {
+                        Object.assign(tmpRequestConfig["headers"], headersFn(params));
+                    }
+                    else {
+                        tmpRequestConfig["headers"] = headersFn(params);
+                    }
+                }
                 var queryParams;
                 // use action specific queryParams if set
                 if (options.queryParams !== undefined) {
@@ -43,33 +51,26 @@ var Resource = /** @class */ (function () {
                 else {
                     queryParams = _this.queryParams;
                 }
-                var requestConfig = Object.assign({}, options.requestConfig);
-                var paramsSerializer = options.requestConfig["paramsSerializer"] !== undefined ||
-                    _this.axios.defaults.paramsSerializer !== undefined;
-                if (queryParams || paramsSerializer) {
-                    requestConfig["params"] = params;
+                // If the queryParams config is disabled omit params in fullRequestConfig. This is to keep changes around
+                // passing in a complete AxiosRequestConfig backwards compatible with previous versions of the library where
+                // the ActionParams partial was used.
+                if (!queryParams) {
+                    tmpRequestConfig["params"] = {};
                 }
-                if (headersFn) {
-                    if (requestConfig["headers"]) {
-                        Object.assign(requestConfig["headers"], headersFn(params));
-                    }
-                    else {
-                        requestConfig["headers"] = headersFn(params);
-                    }
-                }
-                // This is assignment is made to respect the priority of the base URL, url, method and data.
+                // This assignment is made to respect the priority of the base URL, url, method.
                 // It is as following: baseURL > axios instance base URL > request config base URL
                 var fullRequestConfig = Object.assign({
                     method: options.method,
                     url: urlFn(params),
                     baseURL: _this.normalizedBaseURL,
-                    data: data
-                }, requestConfig);
+                }, tmpRequestConfig);
                 return _this.axios.request(fullRequestConfig);
             },
             property: options.property,
+            autoCancel: options.autoCancel,
             beforeRequest: options.beforeRequest,
             onSuccess: options.onSuccess,
+            onCancel: options.onCancel,
             onError: options.onError,
             dispatchString: this.getDispatchString(options.action),
             commitString: this.getCommitString(options.action),

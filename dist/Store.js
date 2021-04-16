@@ -37,11 +37,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createStore = void 0;
+var axios_1 = require("axios");
 var cloneDeep = require("lodash.clonedeep");
 var StoreCreator = /** @class */ (function () {
     function StoreCreator(resource, options) {
         this.successSuffix = "SUCCEEDED";
         this.errorSuffix = "FAILED";
+        this.resource = resource;
         this.resource = resource;
         this.options = Object.assign({
             createStateFn: false,
@@ -61,7 +63,8 @@ var StoreCreator = /** @class */ (function () {
         var resourceState = cloneDeep(this.resource.state);
         var state = Object.assign({
             pending: {},
-            error: {}
+            error: {},
+            source: {},
         }, resourceState);
         var actions = this.resource.actions;
         Object.keys(actions).forEach(function (action) {
@@ -76,6 +79,7 @@ var StoreCreator = /** @class */ (function () {
             }
             state["pending"][property] = false;
             state["error"][property] = null;
+            state["source"][property] = null;
         });
         return state;
     };
@@ -85,7 +89,8 @@ var StoreCreator = /** @class */ (function () {
             var resourceState = cloneDeep(_this.resource.state);
             var state = Object.assign({
                 pending: {},
-                error: {}
+                error: {},
+                source: {},
             }, resourceState);
             var actions = _this.resource.actions;
             Object.keys(actions).forEach(function (action) {
@@ -100,6 +105,7 @@ var StoreCreator = /** @class */ (function () {
                 }
                 state["pending"][property] = false;
                 state["error"][property] = null;
+                state["source"][property] = null;
             });
             return state;
         };
@@ -112,40 +118,55 @@ var StoreCreator = /** @class */ (function () {
         var mutations = {};
         var actions = this.resource.actions;
         Object.keys(actions).forEach(function (action) {
-            var _a = actions[action], property = _a.property, commitString = _a.commitString, beforeRequest = _a.beforeRequest, onSuccess = _a.onSuccess, onError = _a.onError, axios = _a.axios;
-            mutations["" + commitString] = function (state, actionParams) {
+            var _a = actions[action], property = _a.property, commitString = _a.commitString, autoCancel = _a.autoCancel, beforeRequest = _a.beforeRequest, onSuccess = _a.onSuccess, onCancel = _a.onCancel, onError = _a.onError, axios = _a.axios;
+            mutations["" + commitString] = function (state, requestConfig) {
                 if (property !== null) {
                     state.pending[property] = true;
                     state.error[property] = null;
+                    // If autoCancel is enabled and this property maps to a source state, cancel the current pending request.
+                    if (autoCancel && state.source[property]) {
+                        state.source[property].cancel();
+                    }
+                    // If the request config doesn't contain a cancel token, set one in state for convenience. We'll let the user
+                    // provided token take precedence here though in case it's needed for a special controlled flow.
+                    if (!requestConfig.cancelToken) {
+                        var source = StoreCreator.CANCEL_TOKEN_PROVIDER.source();
+                        state.source[property] = source;
+                        requestConfig["cancelToken"] = source.token;
+                    }
                 }
                 if (beforeRequest) {
-                    beforeRequest(state, actionParams);
+                    beforeRequest(state, requestConfig);
                 }
             };
             mutations[commitString + "_" + _this.successSuffix] = function (state, _a) {
-                var payload = _a.payload, actionParams = _a.actionParams;
+                var payload = _a.payload, requestConfig = _a.requestConfig;
                 if (property !== null) {
                     state.pending[property] = false;
                     state.error[property] = null;
+                    state.source[property] = null;
                 }
                 if (onSuccess) {
-                    onSuccess(state, payload, axios, actionParams);
+                    onSuccess(state, payload, axios, requestConfig);
                 }
                 else if (property !== null) {
                     state[property] = payload.data;
                 }
             };
             mutations[commitString + "_" + _this.errorSuffix] = function (state, _a) {
-                var payload = _a.payload, actionParams = _a.actionParams;
+                var payload = _a.payload, requestConfig = _a.requestConfig, isCancellationErr = _a.isCancellationErr;
                 if (property !== null) {
                     state.pending[property] = false;
                     state.error[property] = payload;
+                    state.source[property] = null;
                 }
-                if (onError) {
-                    onError(state, payload, axios, actionParams);
+                if (!isCancellationErr && onError) {
+                    onError(state, payload, axios, requestConfig);
+                }
+                else if (isCancellationErr && onCancel) {
+                    onCancel(state, payload, axios, requestConfig);
                 }
                 else if (property !== null) {
-                    // sets property to it's default value in case of an error
                     state[property] = defaultState[property];
                 }
             };
@@ -157,31 +178,36 @@ var StoreCreator = /** @class */ (function () {
         var storeActions = {};
         var actions = this.resource.actions;
         Object.keys(actions).forEach(function (action) {
-            var _a = actions[action], dispatchString = _a.dispatchString, commitString = _a.commitString, requestFn = _a.requestFn;
-            storeActions[dispatchString] = function (_a, actionParams) {
+            var _a = actions[action], dispatchString = _a.dispatchString, commitString = _a.commitString, requestFn = _a.requestFn, autoCancel = _a.autoCancel;
+            storeActions[dispatchString] = function (_a, requestConfig) {
                 var commit = _a.commit;
-                if (actionParams === void 0) { actionParams = { params: {}, data: {} }; }
+                if (requestConfig === void 0) { requestConfig = cloneDeep(StoreCreator.DEFAULT_REQUEST_CONFIG); }
                 return __awaiter(_this, void 0, void 0, function () {
                     var _this = this;
                     return __generator(this, function (_b) {
-                        if (!actionParams.params)
-                            actionParams.params = {};
-                        if (!actionParams.data)
-                            actionParams.data = {};
-                        commit(commitString, actionParams);
-                        return [2 /*return*/, requestFn(actionParams.params, actionParams.data)
+                        if (!requestConfig.params)
+                            requestConfig.params = {};
+                        if (!requestConfig.data)
+                            requestConfig.data = {};
+                        commit(commitString, requestConfig);
+                        return [2 /*return*/, requestFn(requestConfig)
                                 .then(function (response) {
                                 commit(commitString + "_" + _this.successSuffix, {
                                     payload: response,
-                                    actionParams: actionParams
+                                    requestConfig: requestConfig
                                 });
                                 return Promise.resolve(response);
                             }, function (error) {
-                                commit(commitString + "_" + _this.errorSuffix, {
-                                    payload: error,
-                                    actionParams: actionParams
-                                });
-                                return Promise.reject(error);
+                                // We'll ignore the err if autoCancel is enabled and the cause is cancellation.
+                                var isCancellationErr = axios_1.default.isCancel(error);
+                                var shouldHandleErr = !autoCancel || !isCancellationErr;
+                                if (shouldHandleErr) {
+                                    commit(commitString + "_" + _this.errorSuffix, { payload: error, requestConfig: requestConfig, isCancellationErr: isCancellationErr });
+                                    return Promise.reject(error);
+                                }
+                                else {
+                                    return Promise.resolve();
+                                }
                             })];
                     });
                 });
@@ -198,6 +224,8 @@ var StoreCreator = /** @class */ (function () {
             actions: this.createActions()
         };
     };
+    StoreCreator.CANCEL_TOKEN_PROVIDER = axios_1.default.CancelToken;
+    StoreCreator.DEFAULT_REQUEST_CONFIG = { params: {}, data: {} };
     return StoreCreator;
 }());
 function createStore(resource, options) {

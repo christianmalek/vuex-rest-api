@@ -2,8 +2,10 @@ import axios, { AxiosInstance, AxiosRequestConfig } from "axios"
 
 export interface ResourceAction {
   requestFn: Function,
+  autoCancel: Boolean,
   beforeRequest: Function,
   onSuccess: Function,
+  onCancel: Function,
   onError: Function,
   property: string,
   dispatchString: string,
@@ -19,8 +21,10 @@ export interface ShorthandResourceActionOptions {
   action: string
   property?: string
   path: Function | string
+  autoCancel?: Boolean
   beforeRequest?: Function
   onSuccess?: Function
+  onCancel?: Function
   onError?: Function
   requestConfig?: Object
   queryParams?: Boolean
@@ -35,7 +39,7 @@ export interface ResourceOptions {
   baseURL?: string,
   state?: Object,
   axios?: AxiosInstance,
-  queryParams?: Boolean
+  queryParams?: Boolean,
 }
 
 export class Resource {
@@ -74,7 +78,17 @@ export class Resource {
     }
 
     this.actions[options.action] = {
-      requestFn: (params: Object = {}, data: Object = {}) => {
+      requestFn: (requestConfig) => {
+        const tmpRequestConfig = Object.assign({}, requestConfig, options.requestConfig)
+
+        const { params } = tmpRequestConfig;
+        if (headersFn) {
+          if (tmpRequestConfig["headers"]) {
+            Object.assign(tmpRequestConfig["headers"], headersFn(params))
+          } else {
+            tmpRequestConfig["headers"] = headersFn(params)
+          }
+        }
 
         let queryParams
         // use action specific queryParams if set
@@ -85,34 +99,27 @@ export class Resource {
           queryParams = this.queryParams
         }
 
-        const requestConfig = Object.assign({}, options.requestConfig)
-        const paramsSerializer = options.requestConfig["paramsSerializer"] !== undefined ||
-          this.axios.defaults.paramsSerializer !== undefined
-        if (queryParams || paramsSerializer) {
-          requestConfig["params"] = params
+        // If the queryParams config is disabled omit params in fullRequestConfig. This is to keep changes around
+        // passing in a complete AxiosRequestConfig backwards compatible with previous versions of the library where
+        // the ActionParams partial was used.
+        if (!queryParams) {
+          tmpRequestConfig["params"] = {};
         }
 
-        if (headersFn) {
-          if (requestConfig["headers"]) {
-            Object.assign(requestConfig["headers"], headersFn(params))
-          } else {
-            requestConfig["headers"] = headersFn(params)
-          }
-        }
-
-        // This is assignment is made to respect the priority of the base URL, url, method and data.
+        // This assignment is made to respect the priority of the base URL, url, method.
         // It is as following: baseURL > axios instance base URL > request config base URL
         const fullRequestConfig = Object.assign({
           method: options.method as AxiosRequestConfig["method"],
           url: urlFn(params),
           baseURL: this.normalizedBaseURL,
-          data: data
-        }, requestConfig)
+        }, tmpRequestConfig)
         return this.axios.request(fullRequestConfig)
       },
       property: options.property,
+      autoCancel: options.autoCancel,
       beforeRequest: options.beforeRequest,
       onSuccess: options.onSuccess,
+      onCancel: options.onCancel,
       onError: options.onError,
       dispatchString: this.getDispatchString(options.action),
       commitString: this.getCommitString(options.action),

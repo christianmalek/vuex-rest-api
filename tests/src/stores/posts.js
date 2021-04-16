@@ -31,12 +31,12 @@ const posts = new Vapi({
     action: "getPost",
     property: "post",
     path: ({ id }) => `/posts/${id}`,
-    onSuccess(state, payload, axios, actionParams) {
+    onSuccess(state, payload, axios, requestConfig) {
       state.post = payload.data
-      console.log(actionParams)
+      console.log(requestConfig)
     },
-    onError(state, error, axios, actionParams) {
-      console.log(actionParams, error)
+    onError(state, error, axios, requestConfig) {
+      console.log(requestConfig, error)
     }
   })
   .get({

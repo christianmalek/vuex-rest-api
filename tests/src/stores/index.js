@@ -2,8 +2,10 @@ import Vue from "vue"
 import Vuex from "vuex"
 
 import posts from "./posts"
+import cancel from "./cancel"
 
 Vue.use(Vuex)
+Vue.config.devtools = true
 
 export const state = {
   count: 0
@@ -19,7 +21,8 @@ const store = new Vuex.Store({
   state,
   mutations,
   modules: {
-    posts
+    posts,
+    cancel
   }
 })
 
