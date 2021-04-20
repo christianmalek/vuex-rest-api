@@ -59,11 +59,19 @@ var Resource = /** @class */ (function () {
                 }
                 // This assignment is made to respect the priority of the base URL, url, method.
                 // It is as following: baseURL > axios instance base URL > request config base URL
+                var method = options.method;
                 var fullRequestConfig = Object.assign({
-                    method: options.method,
+                    method: method,
                     url: urlFn(params),
                     baseURL: _this.normalizedBaseURL,
                 }, tmpRequestConfig);
+                // In v2.13.0 a regression was introduced that was allowing data to be passed along with GET requests,
+                // this has the unintended side effect of setting content-type: application/json;charset=UTF-8 headers and
+                // is an unwanted side effect. This is the least intrusive way of handling this problem for now, but I don't
+                // think we really even need a default data prop in this flow.
+                if (["post", "put", "patch"].indexOf(method.toLowerCase()) === -1) {
+                    delete fullRequestConfig.data;
+                }
                 return _this.axios.request(fullRequestConfig);
             },
             property: options.property,
