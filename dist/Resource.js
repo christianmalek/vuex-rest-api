@@ -20,7 +20,7 @@ var Resource = /** @class */ (function () {
         var headersFn = this.getHeadersFn(options);
         if (this.HTTPMethod.indexOf(options.method) === -1) {
             var methods = this.HTTPMethod.join(", ");
-            throw new Error("Illegal HTTP method set. Following methods are allowed: " + methods + ". You chose \"" + options.method + "\".");
+            throw new Error("Illegal HTTP method set. Following methods are allowed: ".concat(methods, ". You chose \"").concat(options.method, "\"."));
         }
         var urlFn;
         if (typeof options.path === "function") {

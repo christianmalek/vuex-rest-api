@@ -113,7 +113,7 @@ var StoreCreator = /** @class */ (function () {
         var actions = this.resource.actions;
         Object.keys(actions).forEach(function (action) {
             var _a = actions[action], property = _a.property, commitString = _a.commitString, beforeRequest = _a.beforeRequest, onSuccess = _a.onSuccess, onError = _a.onError, axios = _a.axios;
-            mutations["" + commitString] = function (state, actionParams) {
+            mutations["".concat(commitString)] = function (state, actionParams) {
                 if (property !== null) {
                     state.pending[property] = true;
                     state.error[property] = null;
@@ -122,7 +122,7 @@ var StoreCreator = /** @class */ (function () {
                     beforeRequest(state, actionParams);
                 }
             };
-            mutations[commitString + "_" + _this.successSuffix] = function (state, _a) {
+            mutations["".concat(commitString, "_").concat(_this.successSuffix)] = function (state, _a) {
                 var payload = _a.payload, actionParams = _a.actionParams;
                 if (property !== null) {
                     state.pending[property] = false;
@@ -135,7 +135,7 @@ var StoreCreator = /** @class */ (function () {
                     state[property] = payload.data;
                 }
             };
-            mutations[commitString + "_" + _this.errorSuffix] = function (state, _a) {
+            mutations["".concat(commitString, "_").concat(_this.errorSuffix)] = function (state, _a) {
                 var payload = _a.payload, actionParams = _a.actionParams;
                 if (property !== null) {
                     state.pending[property] = false;
@@ -171,13 +171,13 @@ var StoreCreator = /** @class */ (function () {
                         commit(commitString, actionParams);
                         return [2 /*return*/, requestFn(actionParams.params, actionParams.data)
                                 .then(function (response) {
-                                commit(commitString + "_" + _this.successSuffix, {
+                                commit("".concat(commitString, "_").concat(_this.successSuffix), {
                                     payload: response,
                                     actionParams: actionParams
                                 });
                                 return Promise.resolve(response);
                             }, function (error) {
-                                commit(commitString + "_" + _this.errorSuffix, {
+                                commit("".concat(commitString, "_").concat(_this.errorSuffix), {
                                     payload: error,
                                     actionParams: actionParams
                                 });
