@@ -2,6 +2,16 @@
 
 (format is `dd.mm.yyyy` )
 
+### 2.15.0 (24.05.2022)
+
+* updated axios peer dependency to version `^0.27`
+* updated typescript dev dependency to `^4.6`
+* updated typescript lib configuration from es2015 to es2018 and DOM
+
+### 2.14.0 (13.07.2021)
+
+* updated axios peer dependency to version `^0.21`
+
 ### 2.13.0 (19.07.2020)
 
 * allow all HTTP request methods to set a payload (contributed by @dries007, see https://github.com/christianmalek/vuex-rest-api/pull/103)

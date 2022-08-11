@@ -6,7 +6,8 @@
     "removeComments": false,
     "declaration": true,
     "lib": [
-      "es2015"
+      "es2018",
+      "DOM"
     ]
   },
   "include": [

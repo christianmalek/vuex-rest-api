@@ -35,7 +35,7 @@ var Vapi = /** @class */ (function () {
     };
     Vapi.prototype.getStore = function (options) {
         if (options === void 0) { options = {}; }
-        return Store_1.createStore(this.resource, options);
+        return (0, Store_1.createStore)(this.resource, options);
     };
     return Vapi;
 }());
