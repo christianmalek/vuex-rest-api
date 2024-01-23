@@ -24,7 +24,8 @@ export interface MutationMap {
 
 interface ActionParamsBody {
   params: object
-  data: object
+  data: object,
+  requestHeaders: object
 }
 
 class StoreCreator {
@@ -174,14 +175,14 @@ class StoreCreator {
     Object.keys(actions).forEach((action) => {
       const { dispatchString, commitString, requestFn } = actions[action]
 
-      storeActions[dispatchString] = async ({ commit }, actionParams: ActionParamsBody = { params: {}, data: {} }) => {
+      storeActions[dispatchString] = async ({ commit }, actionParams: ActionParamsBody = { params: {}, data: {}, requestHeaders: null }) => {
         if (!actionParams.params)
           actionParams.params = {}
         if (!actionParams.data)
           actionParams.data = {}
 
         commit(commitString, actionParams)
-        return requestFn(actionParams.params, actionParams.data)
+        return requestFn(actionParams.params, actionParams.data, actionParams.requestHeaders)
           .then((response) => {
             commit(`${commitString}_${this.successSuffix}`, {
               payload: response, actionParams
