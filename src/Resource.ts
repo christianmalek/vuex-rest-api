@@ -74,7 +74,7 @@ export class Resource {
     }
 
     this.actions[options.action] = {
-      requestFn: (params: Object = {}, data: Object = {}) => {
+      requestFn: (params: Object = {}, data: Object = {}, requestHeaders: Object = null) => {
 
         let queryParams
         // use action specific queryParams if set
@@ -97,6 +97,14 @@ export class Resource {
             Object.assign(requestConfig["headers"], headersFn(params))
           } else {
             requestConfig["headers"] = headersFn(params)
+          }
+        }
+
+        if (requestHeaders) {
+          if (requestConfig["headers"]) {
+            Object.assign(requestConfig["headers"], requestHeaders)
+          } else {
+            requestConfig["headers"] = requestHeaders
           }
         }
 
