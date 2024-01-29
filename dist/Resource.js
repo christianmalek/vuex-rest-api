@@ -31,9 +31,10 @@ var Resource = /** @class */ (function () {
             urlFn = function () { return options.path; };
         }
         this.actions[options.action] = {
-            requestFn: function (params, data) {
+            requestFn: function (params, data, requestHeaders) {
                 if (params === void 0) { params = {}; }
                 if (data === void 0) { data = {}; }
+                if (requestHeaders === void 0) { requestHeaders = null; }
                 var queryParams;
                 // use action specific queryParams if set
                 if (options.queryParams !== undefined) {
@@ -55,6 +56,14 @@ var Resource = /** @class */ (function () {
                     }
                     else {
                         requestConfig["headers"] = headersFn(params);
+                    }
+                }
+                if (requestHeaders) {
+                    if (requestConfig["headers"]) {
+                        Object.assign(requestConfig["headers"], requestHeaders);
+                    }
+                    else {
+                        requestConfig["headers"] = requestHeaders;
                     }
                 }
                 // This is assignment is made to respect the priority of the base URL, url, method and data.
